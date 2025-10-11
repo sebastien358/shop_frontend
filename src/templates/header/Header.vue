@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore.ts'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { reactive } from 'vue'
 
 const authStore = useAuthStore()
 
 const router = useRouter()
 
-const isDropdownOpenAdmin = ref(false)
-const isDropdownOpenUser = ref(false)
+const state = reactive({
+  activeDropdown: null
+})
 
-const toggleDropdownAdmin = () => {
-  isDropdownOpenAdmin.value = !isDropdownOpenAdmin.value
-  isDropdownOpenUser.value = false
-}
-
-const toggleDropdownUser = () => {
-  isDropdownOpenUser.value = !isDropdownOpenUser.value
-  isDropdownOpenAdmin.value = false
+function toggleDropdown(dropdownType: string) {
+  if (state.activeDropdown === dropdownType) {
+    state.activeDropdown = null
+  } else {
+    state.activeDropdown = dropdownType
+  }
 }
 
 function isLoggedIn() {
@@ -40,7 +39,6 @@ function logout() {
 
 <template>
   <header class="d-flex align-items-center space-between header">
-
     <div class="d-flex align-items-center">
       <router-link to="/boutique" class="d-flex align-items-center logo">
         <img src="@/assets/images/3030285.webp" />
@@ -49,9 +47,9 @@ function logout() {
 
       <ul class="d-flex align-items-center">
 
-        <li v-if="roleAdmin()" class="dropdown mr-10" @click="toggleDropdownAdmin()">
+        <li v-if="roleAdmin()" class="dropdown mr-10" @click="toggleDropdown('admin')">
           <a href="#">Admin</a>
-          <div class="dropdown-menu" :class="{ show: isDropdownOpenAdmin }" aria-labelledby="dropdownMenuLink">
+          <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'admin' }" aria-labelledby="dropdownMenuLink">
             <div class="d-flex flex-column drop-menu-link">
               <router-link to="/admin">Admin</router-link>
             </div>
@@ -59,9 +57,9 @@ function logout() {
           </div>
         </li>
 
-        <li v-if="roleUser()" class="dropdown mr-10" @click="toggleDropdownUser()">
+        <li v-if="roleUser()" class="dropdown mr-10" @click="toggleDropdown('user')">
           <a href="#">Profile</a>
-          <div class="dropdown-menu" :class="{ show: isDropdownOpenUser }" aria-labelledby="dropdownMenuLink">
+          <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'user' }" aria-labelledby="dropdownMenuLink">
             <div class="d-flex flex-column drop-menu-link">
               <router-link to="/profile">Voir profil</router-link>
               <router-link to="#">Mes commandes</router-link>
@@ -69,7 +67,9 @@ function logout() {
             <div class="dropdown-divider"></div>
           </div>
         </li>
+
       </ul>
+
     </div>
 
 
@@ -116,9 +116,6 @@ function logout() {
       a {
         text-decoration: none;
         color: var(--text-primary-color);
-        &:hover {
-          color: var(--text-secondary-color);
-        }
       }
     }
   }
@@ -129,32 +126,29 @@ function logout() {
   .dropdown-menu {
     display: none;
     position: absolute;
+    border: var(--border);
+    padding: 10px 40px;
+    background-color: var(--text-primary-color);
     top: 33px;
     left: 0;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 10px 50px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    a.router-link-active {
-      color: var(--gray-3);
-      white-space: nowrap;
-    }
+    transition: all 300ms ease;
     &.show {
       display: block;
     }
-    .dropdown-item {
-      display: block;
-      transition: background-color 0.2s ease;
-    }
-    .dropdown-divider {
-      height: 1px;
-      margin: 10px 0;
-      background-color: #ddd;
-    }
-    .drop-menu-link {
-      line-height: 27px;
+    .dropdown-menu-link {
+      a {
+        color: var(--gray-3);
+      }
+      white-space: nowrap;
+      line-height: 30px;
+      .dropdown-divider {
+        height: 1px;
+        margin: 10px 0;
+        background-color: var(--gray-3);
+      }
     }
   }
 }
+
+
 </style>
