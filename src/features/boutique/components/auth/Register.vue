@@ -27,9 +27,9 @@ const { handleSubmit, isSubmitting } = useForm({
   validationSchema: toTypedSchema(schema)
 })
 
-const { value: email, errorMessage: errorEmail } = useField('email')
-const { value: password, errorMessage: errorPassword } = useField('password')
-const { value: passwordConfirm, errorMessage: errorPasswordConfirm } = useField('passwordConfirm')
+const { value: email, errorMessage: errorEmail } = useField<string>('email')
+const { value: password, errorMessage: errorPassword } = useField<string>('password')
+const { value: passwordConfirm, errorMessage: errorPasswordConfirm} = useField<string>('passwordConfirm')
 
 const onSubmit = handleSubmit(async(dataRegister, {resetForm}) => {
   try {
