@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps<{
   message: string
@@ -16,6 +19,7 @@ onMounted(() => {
   if (props.type === 'success') {
     timeoutId = setTimeout(() => {
       emit('close')
+      router.push({path: '/boutique'})
     }, 2000)
   } else {
     timeoutId = setTimeout(() => {

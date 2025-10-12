@@ -7,6 +7,8 @@ const authStore = useAuthStore()
 
 const router = useRouter()
 
+// Menu déroulant
+
 const state = reactive<{
   activeDropdown: string | null
   openMenuMobile: boolean
@@ -15,17 +17,21 @@ const state = reactive<{
   openMenuMobile: false
 })
 
-function toggleDropdown(dropdownType: string | null) {
-  if (state.activeDropdown === dropdownType) {
+function toggleDropdown(DropdownType: string | null) {
+  if (state.activeDropdown === DropdownType) {
     state.activeDropdown = null
   } else {
-    state.activeDropdown = dropdownType
+    state.activeDropdown = DropdownType
   }
 }
+
+// Gestion de connexion
 
 function isLoggedIn() {
   return authStore.isLoggedIn
 }
+
+// Gestion des roles
 
 function roleAdmin() {
   return authStore.roleAdmin()
@@ -34,6 +40,8 @@ function roleAdmin() {
 function roleUser() {
   return authStore.roleUser()
 }
+
+// Déconnexion
 
 function logout() {
   authStore.logout()
@@ -55,24 +63,24 @@ function logout() {
           <li class="mr-10">
             <router-link to="/boutique">Boutique</router-link>
           </li>
-          <li v-if="roleAdmin()" class="dropdown" @click="toggleDropdown('admin')">
+          <li v-if="roleAdmin()" class="mr-10 dropdown" @click="toggleDropdown('admin')">
             <a href="#">Admin</a>
-            <div class="dropdown-menu" :class="{shop: state.activeDropdown === 'admin'}">
+            <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
               <div class="d-flex flex-column dropdown-menu-link">
-                <router-link to="/product-form">Ajouter un produit</router-link>
-                <router-link to="#">aa</router-link>
-                <router-link to="#">bb</router-link>
+                <router-link to="/admin">Admin</router-link>
+                <router-link to="#">AA</router-link>
+                <router-link to="#">AA</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
           </li>
           <li v-if="roleUser()" class="dropdown" @click="toggleDropdown('user')">
-            <a href="#">Profile</a>
-            <div class="dropdown-menu" :class="{shop: state.activeDropdown === 'user'}">
+            <a href="#">Profil</a>
+            <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
               <div class="d-flex flex-column dropdown-menu-link">
-                <router-link to="/profile">Voir profile</router-link>
-                <router-link to="#">aa</router-link>
-                <router-link to="#">bb</router-link>
+                <router-link to="/profile">Profil</router-link>
+                <router-link to="#">AA</router-link>
+                <router-link to="#">AA</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
@@ -85,10 +93,10 @@ function logout() {
       <ul class="d-flex align-items-center">
         <div v-if="!isLoggedIn()" class="d-flex align-items-center">
           <li class="mr-10">
-            <router-link :to="{ name: 'register' }">Inscription</router-link>
+            <router-link :to="{path: '/register'}">Inscription</router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'login' }">Connexion</router-link>
+            <router-link :to="{path: '/login'}">Connexion</router-link>
           </li>
         </div>
         <div v-else>
@@ -106,7 +114,7 @@ function logout() {
           <router-link to="/admin">Admin</router-link>
         </li>
         <li v-if="roleUser()">
-          <router-link to="/profil">Profil</router-link>
+          <router-link to="/profile">Profil</router-link>
         </li>
         <div v-if="!isLoggedIn()">
           <li>
@@ -164,28 +172,29 @@ function logout() {
 // Menu déroulant
 
 .dropdown {
-  margin: 0 5px;
   position: relative;
   .dropdown-menu {
-    display: none;
     position: absolute;
-    border: var(--border);
-    padding: 10px 20px 20px 20px;
-    background-color: var(--text-primary-color);
-    left: 0;
     top: 34px;
-    z-index: 1;
-    width: 280px;
+    left: 0;
+    width: 250px;
+    border: var(--border);
+    padding: 10px 10px 15px 10px;
+    background-color: var(--text-primary-color);
+    line-height: 27px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    &.show {
+      visibility: visible;
+      transition: opacity 0.5s ease;
+      opacity: 1;
+    }
     .dropdown-menu-link {
-      line-height: 27px;
       a {
         font-size: 14px;
         color: var(--gray-3);
-        white-space: nowrap;
       }
-    }
-    &.shop {
-      display: block;
     }
     .dropdown-divider {
       border-bottom: var(--border);
@@ -193,6 +202,7 @@ function logout() {
     }
   }
 }
+
 
 // Menu tablet
 

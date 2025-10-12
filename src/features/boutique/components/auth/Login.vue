@@ -5,42 +5,42 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { useAuthStore } from '@/stores/authStore.ts'
 import * as z from 'zod'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 
-const router = useRouter()
+const MESSAGES = {
+  SUCCESS_LOGIN: 'Vos êtes connecté',
+  INVALID_CREDENTIALS: 'Identifiant ou mot de passe invalid',
+  EMAIL_NOT_FOUND: "Aucun compte n'existe avec cet email"
+}
 
 const schema = z.object({
-  email: z
-    .string({ message: 'Email requis' }).email(),
-  password: z
-    .string({ message: 'Mot de passe requis' })
+  email: z.string({ message: 'Email requis' }).email(),
+  password: z.string({ message: 'Mot de passe requis' }),
 })
 
 const { handleSubmit, isSubmitting } = useForm({
-  validationSchema: toTypedSchema(schema)
+  validationSchema: toTypedSchema(schema),
 })
 
 const { value: email, errorMessage: errorEmail } = useField('email')
 const { value: password, errorMessage: errorPassword } = useField('password')
 
-const onSubmit = handleSubmit(async (dataLogin, {resetForm}) => {
+const onSubmit = handleSubmit(async (dataLogin, { resetForm }) => {
   try {
     const response = await authStore.emailExistingLogin(dataLogin)
     if (response.exists) {
       await authStore.login(dataLogin)
       const isLoggedIn = authStore.isLoggedIn
       if (isLoggedIn) {
-        setSuccessMessage('Vos êtes connecté', resetForm)
-        router.push({ path: '/boutique' })
+        setSuccessMessage(MESSAGES.SUCCESS_LOGIN, resetForm)
       } else {
-        setErrorMessage('Identifiant ou mot de passe invalid')
+        setErrorMessage(MESSAGES.INVALID_CREDENTIALS)
       }
     } else {
-      setErrorMessage('Aucun compte n\'existe avec cet email')
+      setErrorMessage(MESSAGES.EMAIL_NOT_FOUND)
     }
-  } catch(e) {
+  } catch (e) {
     console.error(e)
   }
 })
@@ -48,9 +48,11 @@ const onSubmit = handleSubmit(async (dataLogin, {resetForm}) => {
 const successMessage = ref('')
 const errorMessage = ref('')
 
+let reset = () => {}
+
 function setSuccessMessage(message: string, resetForm: () => void) {
   successMessage.value = message
-  resetForm()
+  reset = resetForm()
 }
 
 function setErrorMessage(message: string) {
@@ -60,6 +62,11 @@ function setErrorMessage(message: string) {
 function closeAlert() {
   successMessage.value = ''
   errorMessage.value = ''
+}
+
+function handleCloseSuccessAlert() {
+  closeAlert()
+  reset()
 }
 </script>
 
@@ -82,12 +89,20 @@ function closeAlert() {
           </span>
         </div>
         <div class="text-center">
-          <AlertMessage v-if="successMessage" :message="successMessage" type="success" @close="closeAlert()" />
-          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" @close="closeAlert()" />
+          <AlertMessage
+            v-if="successMessage"
+            :message="successMessage"
+            type="success"
+            @close="handleCloseSuccessAlert"
+          />
+          <AlertMessage
+            v-if="errorMessage"
+            :message="errorMessage"
+            type="error"
+            @close="closeAlert()"
+          />
         </div>
-        <button class="btn btn-primary" :disabled="isSubmitting">
-          Soumettre
-        </button>
+        <button class="btn btn-primary" :disabled="isSubmitting">Soumettre</button>
       </form>
     </div>
   </div>
