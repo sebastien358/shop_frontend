@@ -52,20 +52,20 @@ let reset = () => {}
 
 function setSuccessMessage(message: string, resetForm: () => void) {
   successMessage.value = message
-  reset = resetForm()
+  reset = resetForm
 }
 
 function setErrorMessage(message: string) {
   errorMessage.value = message
 }
 
-function closeAlert() {
+function closeFields() {
   successMessage.value = ''
   errorMessage.value = ''
 }
 
-function handleCloseSuccessAlert() {
-  closeAlert()
+function handleResetForm() {
+  closeFields()
   reset()
 }
 </script>
@@ -93,16 +93,18 @@ function handleCloseSuccessAlert() {
             v-if="successMessage"
             :message="successMessage"
             type="success"
-            @close="handleCloseSuccessAlert"
+            @close="handleResetForm"
           />
           <AlertMessage
             v-if="errorMessage"
             :message="errorMessage"
             type="error"
-            @close="closeAlert()"
+            @close="closeFields"
           />
         </div>
-        <button class="btn btn-primary" :disabled="isSubmitting">Soumettre</button>
+        <button class="btn btn-primary" :disabled="isSubmitting">
+          Soumettre
+        </button>
       </form>
     </div>
   </div>

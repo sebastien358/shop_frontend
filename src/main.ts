@@ -14,8 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import icons and add them to the Library */
 import { faUserSecret, faThumbsUp, faBars } from '@fortawesome/free-solid-svg-icons'
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
 
-library.add(faUserSecret, faThumbsUp, faFacebook, faBars)
+library.add(faUserSecret, faThumbsUp, faFacebook, faBars, faBasketShopping)
 
 const app = createApp(App)
 

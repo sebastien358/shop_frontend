@@ -13,28 +13,29 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-let timeoutId = null
+let resetTimeout;
 
 onMounted(() => {
   if (props.type === 'success') {
-    timeoutId = setTimeout(() => {
-      emit('close')
+    resetTimeout = setTimeout(() => {
       router.push({path: '/boutique'})
+      emit('close')
     }, 2000)
   } else {
-    timeoutId = setTimeout(() => {
+    resetTimeout = setTimeout(() => {
       emit('close')
-    }, 4000)
+    }, 3000)
   }
 })
 
 onUnmounted(() => {
-  clearTimeout(timeoutId)
+  clearTimeout(resetTimeout)
 })
+
 </script>
 
 <template>
-  <div v-if="message" :class="type === 'success' ? 'alert-success' : 'alert-error'">
+  <div v-if="message" :class="props.type === 'success' ? 'alert-success' : 'alert-error'">
     {{ message }}
   </div>
 </template>

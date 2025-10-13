@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null
       this.isLoggedIn = false
-      this.roles = null
+      this.roles = []
       localStorage.removeItem(TOKEN_KEY)
       localStorage.removeItem(USER_ROLES)
     }

@@ -8,6 +8,12 @@ import { ref } from 'vue'
 
 const authStore = useAuthStore()
 
+const MESSAGES = {
+  SUCCESS_REGISTER: 'Inscription réussie',
+  INVALID_CREDENTIALS: 'l\'inscription a échouée',
+  EMAIL_FOUND: "Un compte existe avec cet email"
+}
+
 const successMessage = ref('')
 const errorMessage = ref('')
 
@@ -38,10 +44,11 @@ const onSubmit = handleSubmit(async(dataRegister, {resetForm}) => {
       setErrorMessage('Un compte existe avec cet email')
     } else {
       const response = await authStore.register(dataRegister)
+      setErrorMessage(MESSAGES.EMAIL_FOUND)
       if (response) {
-        setSuccessMessage('L\'inscription a réussie', resetForm)
+        setSuccessMessage(MESSAGES.SUCCESS_REGISTER, resetForm)
       } else {
-        setErrorMessage('L\'isncription a échouée')
+        setErrorMessage(MESSAGES.INVALID_CREDENTIALS)
       }
     }
   } catch(e) {
@@ -49,9 +56,11 @@ const onSubmit = handleSubmit(async(dataRegister, {resetForm}) => {
   }
 })
 
+let reset = () => {}
+
 function setSuccessMessage(message: string, resetForm: () => void) {
   successMessage.value = message
-  resetForm()
+  reset = resetForm
 }
 
 function setErrorMessage(message: string) {
@@ -61,6 +70,11 @@ function setErrorMessage(message: string) {
 function closeAlert() {
   successMessage.value = ''
   errorMessage.value = ''
+}
+
+function handleResetForm() {
+  closeAlert()
+  reset()
 }
 </script>
 
@@ -90,8 +104,18 @@ function closeAlert() {
           </span>
         </div>
         <div class="text-center">
-          <AlertMessage v-if="successMessage" :message="successMessage" type="success" @close="closeAlert()" />
-          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" @close="closeAlert()" />
+          <AlertMessage
+            v-if="successMessage"
+            :message="successMessage"
+            type="success"
+            @close="handleResetForm"
+          />
+          <AlertMessage
+            v-if="errorMessage"
+            :message="errorMessage"
+            type="error"
+            @close="closeAlert()"
+          />
         </div>
         <button class="btn btn-primary" :disabled="isSubmitting">
           Soumettre

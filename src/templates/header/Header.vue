@@ -17,12 +17,12 @@ const state = reactive<{
   openMenuMobile: false
 })
 
-function toggleDropdown(DropdownType: string | null) {
-  if (state.activeDropdown === DropdownType) {
-    state.activeDropdown = null
-  } else {
-    state.activeDropdown = DropdownType
-  }
+function openDropdown(dropType: string | null) {
+  state.activeDropdown = dropType
+}
+
+function closeDropdown() {
+  state.activeDropdown = null
 }
 
 // Gestion de connexion
@@ -60,27 +60,20 @@ function logout() {
       <!-- Menu -->
       <div class="hide-menu">
         <ul class="d-flex align-items-center">
-          <li class="mr-10">
-            <router-link to="/boutique">Boutique</router-link>
-          </li>
-          <li v-if="roleAdmin()" class="mr-10 dropdown" @click="toggleDropdown('admin')">
+          <li v-if="roleAdmin()" class="mr-10 dropdown" @mouseover="openDropdown('admin')" @mouseout="closeDropdown()">
             <a href="#">Admin</a>
             <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
               <div class="d-flex flex-column dropdown-menu-link">
                 <router-link to="/admin">Admin</router-link>
-                <router-link to="#">AA</router-link>
-                <router-link to="#">AA</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
           </li>
-          <li v-if="roleUser()" class="dropdown" @click="toggleDropdown('user')">
-            <a href="#">Profil</a>
+          <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
+            <a href="#">Profile</a>
             <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
               <div class="d-flex flex-column dropdown-menu-link">
-                <router-link to="/profile">Profil</router-link>
-                <router-link to="#">AA</router-link>
-                <router-link to="#">AA</router-link>
+                <router-link to="/profile">Profile</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
@@ -110,11 +103,23 @@ function logout() {
     <div class="container-tablet">
       <font-awesome-icon @click="state.openMenuMobile = !state.openMenuMobile" icon="fa-solid fa-bars" />
       <ul v-if="state.openMenuMobile" class="tablet-menu">
-        <li v-if="roleAdmin()">
-          <router-link to="/admin">Admin</router-link>
+        <li v-if="roleAdmin()" class="dropdown" @mouseover="openDropdown('admin')" @mouseout="closeDropdown()">
+          <a href="#">Admin</a>
+          <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
+            <div class="d-flex flex-column dropdown-menu-link">
+              <router-link to="/profile">Profil</router-link>
+            </div>
+            <div class="dropdown-divider"></div>
+          </div>
         </li>
-        <li v-if="roleUser()">
-          <router-link to="/profile">Profil</router-link>
+        <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
+          <a href="#">Profile</a>
+          <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
+            <div class="d-flex flex-column dropdown-menu-link">
+              <router-link to="/admin">Admin</router-link>
+            </div>
+            <div class="dropdown-divider"></div>
+          </div>
         </li>
         <div v-if="!isLoggedIn()">
           <li>
@@ -172,29 +177,26 @@ function logout() {
 // Menu déroulant
 
 .dropdown {
+  z-index: 1;
   position: relative;
   .dropdown-menu {
     position: absolute;
-    top: 34px;
-    left: 0;
-    width: 250px;
     border: var(--border);
-    padding: 10px 10px 15px 10px;
+    padding: 10px;
     background-color: var(--text-primary-color);
-    line-height: 27px;
+    top: 33px;
+    left: 0;
     visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    opacity: 0.5;
+    transition: opacity 200ms ease, visibility 200ms;
+    width: 240px;
     &.show {
-      visibility: visible;
-      transition: opacity 0.5s ease;
       opacity: 1;
+      visibility: visible;
     }
-    .dropdown-menu-link {
-      a {
-        font-size: 14px;
-        color: var(--gray-3);
-      }
+    .dropdown-menu-link a {
+      font-size: 14px;
+      color: var(--gray-3);
     }
     .dropdown-divider {
       border-bottom: var(--border);
@@ -202,7 +204,6 @@ function logout() {
     }
   }
 }
-
 
 // Menu tablet
 
@@ -223,7 +224,7 @@ function logout() {
     padding: 20px 20px;
     top: 37px;
     right: -5px;
-    line-height: 27px;
+    line-height: 30px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
