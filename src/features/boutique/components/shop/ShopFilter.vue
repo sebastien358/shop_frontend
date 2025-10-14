@@ -24,15 +24,6 @@ async function isSelectPriceRance(priceRange: number[]) {
   }
 }
 
-function priceDisplay(priceRange: number[]) {
-  return priceRange[0] === 0 ? 'Tous les produits' : priceRange[0] === 2000 ? 'Plus de 2000' : `Entre ${priceRange[0]} et ${priceRange[1]}`
-}
-
-
-function isSelect(priceRange: number[]) {
-  return priceRange[0] === productStore.initPriceRange[0] && priceRange[1] === productStore.initPriceRange[1]
-}
-
 // Filtrer par catégorie
 
 async function isSelectCategory(category: string) {
@@ -42,6 +33,14 @@ async function isSelectCategory(category: string) {
   } catch(e) {
     console.error(e)
   }
+}
+
+function priceDisplay(priceRange: number[]) {
+  return priceRange[0] === 0 ? 'Tous les produits' : priceRange[0] === 2000 ? 'Plus de 2000' : `Entre ${priceRange[0]} et ${priceRange[1]}`
+}
+
+function isSelect(priceRange: number[]) {
+  return priceRange[0] === productStore.initPriceRange[0] && priceRange[1] === productStore.initPriceRange[1]
 }
 
 function resetFilters() {
@@ -74,7 +73,8 @@ function resetFilters() {
       </div>
     </div>
     <!-- Réinitialisation -->
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column shop-filter_reinitialisation">
+      <p class="nbr-products">Nombre de produits: <span>{{ productStore.product.length }}</span></p>
       <button @click="resetFilters()" class="btn btn-danger">Réinitialser</button>
     </div>
   </div>
@@ -112,7 +112,7 @@ function resetFilters() {
     }
   }
   &_category {
-    margin-top: 20px;
+    margin-top: 15px;
     cursor: pointer;
     font-size: 16px;
     line-height: 33px;
@@ -122,6 +122,15 @@ function resetFilters() {
     .active {
       color: var(--success-2);
       text-decoration: underline;
+    }
+  }
+  &_reinitialisation {
+    .nbr-products {
+      font-size: 14px;
+      margin-bottom: 4px;
+      span {
+        color: var(--success-2);
+      }
     }
   }
 }

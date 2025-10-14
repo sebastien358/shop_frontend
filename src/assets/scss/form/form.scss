@@ -1,6 +1,11 @@
 .container-form {
-  padding: 10px;
+  padding: 20px;
   border: var(--border);
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
+  .error-field {
+    color: var(--danger-1);
+    font-size: 12px;
+    margin-top: 6px;
+  }
 }

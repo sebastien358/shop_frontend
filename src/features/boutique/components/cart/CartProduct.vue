@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
 import { useCartStore } from '@/stores/cartStore.ts'
-
 const cartStore = useCartStore()
 
 defineProps<{
@@ -34,7 +32,7 @@ async function deleteProductToCart(id: number) {
 <style scoped lang="scss">
 .cart-product {
   border: var(--border);
-  padding: 10px;
+  padding: 10px 6px;
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
   h4 {
@@ -49,7 +47,7 @@ async function deleteProductToCart(id: number) {
   }
   button {
     font-size: 11px;
-    padding: 8px;
+    padding: 9px 8px;
   }
 }
 </style>

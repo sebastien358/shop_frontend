@@ -5,7 +5,7 @@ import { useProductStore } from '@/stores/productStore.ts'
 const productStore = useProductStore()
 
 defineProps<{
-  products: products[]
+  products: any
 }>()
 
 async function loadProducts() {

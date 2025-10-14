@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import CartProductList from '@/features/boutique/components/cart/CartProductList.vue'
-import { computed, reactive } from 'vue'
+import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/authStore.ts'
 import { useRouter } from 'vue-router'
+import Calc from '@/templates/calc/Calc.vue'
 
 const state = reactive<{
   open: boolean
@@ -13,7 +14,7 @@ const state = reactive<{
 const props = defineProps<{
   cart: any
   total: number
-  itemsToCartExisting: number
+  itemsToCart: number
 }>()
 
 // gestion des roles et redirection
@@ -34,16 +35,19 @@ function toGoCommand() {
 
 <template>
   <div class="cart-fixed">
-    <div @click="state.open = true" v-if="!state.open" class="toggle-cart">
-      <div class="nbr-products"><span>{{ cart.length }}</span></div>
-      <font-awesome-icon icon="fa-solid fa-basket-shopping" />
-    </div>
-    <div v-else class="d-flex flex-column cart">
-      <h4>Panier</h4>
-      <span :class="cart.length > 0 ? 'product-data' : 'no-product'">{{ itemsToCartExisting }}</span>
-      <CartProductList :cart="cart" />
-      <button @click="toGoCommand()" class="btn btn-success"> Commander ({{ total }})€</button>
-    </div>
+    <transition mode="out-in">
+      <div @click="state.open = true" v-if="!state.open" class="toggle-cart" :class="{'active': cart.length > 0}">
+        <div class="nbr-products"><span>{{ cart.length }}</span></div>
+        <font-awesome-icon icon="fa-solid fa-basket-shopping" />
+      </div>
+      <div v-else class="d-flex flex-column cart">
+        <h4>Panier</h4>
+        <span :class="{'no-product': cart.length === 0}">{{ itemsToCart }}</span>
+        <CartProductList :cart="cart" />
+        <button @click="toGoCommand()" class="btn btn-success"> Commander ({{ total }})€</button>
+      </div>
+    </transition>
+    <Calc :open="state.open" @close="state.open = false" :transparent="false" />
   </div>
 </template>
 
@@ -55,6 +59,7 @@ function toGoCommand() {
 }
 
 .cart-fixed {
+  z-index: 2;
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -66,6 +71,10 @@ function toGoCommand() {
     background-color: var(--primary-1);
     border-radius: 50%;
     @include displayCenter();
+    &.active {
+      border: 3px solid #41B883;
+      box-shadow: #41B883 0px 4px 12px;
+    }
     .nbr-products {
       position: absolute;
       height: 13px;
@@ -86,8 +95,9 @@ function toGoCommand() {
     }
   }
   .cart {
+
     width: 530px;
-    padding: 10px 10px 5px 10px;
+    padding: 15px 8px 6px 8px;
     border: var(--border);
     background-color: var(--text-primary-color);
     h4 {
@@ -96,19 +106,23 @@ function toGoCommand() {
     button {
       margin-top: 6px;
     }
-    .product-data, .no-product {
+    .no-product {
       margin-bottom: 10px;
       text-align: center;
-    }
-    .product-data {
-      font-size: 13px;
-      color: var(--success-2);
-    }
-    .no-product {
       font-weight: 500;
       font-size: 13px;
       color: var(--danger-1);
     }
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

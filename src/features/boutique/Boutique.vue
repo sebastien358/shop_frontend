@@ -56,7 +56,7 @@ onMounted(async () => {
     <Cart
       :cart="cart"
       :total="cartStore.total"
-      :itemsToCartExisting="cartStore.itemsToCartExisting"
+      :itemsToCart="cartStore.itemsToCartExisting"
     />
   </div>
 </template>

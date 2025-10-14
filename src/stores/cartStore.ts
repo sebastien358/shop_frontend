@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useProductStore } from '@/stores/productStore.ts'
-import { axiosAddProductToCart, axiosDeleteProductToCart, axiosGetProductToCart } from '@/shared/services/cart.service.ts'
+import { axiosAddProductToCart, axiosDeleteProductToCart, axiosGetProductToCart } from '@/shared/services/user/cart.service.ts'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
@@ -8,7 +8,7 @@ export const useCartStore = defineStore('cart', {
   }),
   getters: {
     itemsToCartExisting(state) {
-      return state.cart.length > 0 ? 'Liste des produits' : 'Le panier est vide...'
+      return state.cart.length > 0 ? '' : 'Le panier est vide...'
     },
     total(state) {
       const initialValue = 0

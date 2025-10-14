@@ -60,18 +60,13 @@ a {
 
 a.router-link-active {
   text-decoration: underline;
+  font-weight: 500;
 }
 
 body {
   font-family: var(--font-family);
   color: var(--text-color);
   background-color: var(--gray-1);
-}
-
-.error-field {
-  color: var(--danger-1);
-  font-size: 12px;
-  margin-top: 3px;
 }
 
 .hide-menu {

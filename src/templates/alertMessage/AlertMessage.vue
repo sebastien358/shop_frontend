@@ -18,7 +18,7 @@ let resetTimeout;
 onMounted(() => {
   if (props.type === 'success') {
     resetTimeout = setTimeout(() => {
-      router.push({path: '/boutique'})
+      router.push({path: '/payment'})
       emit('close')
     }, 2000)
   } else {
