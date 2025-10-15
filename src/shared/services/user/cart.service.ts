@@ -48,10 +48,10 @@ export async function axiosAddItemToCart(id: number): Promise<CartProductInterfa
 export async function axiosDeleteItemToCart(id: number): Promise<CartProductInterface> {
   try {
     const response = await axios.delete(`${BASE_URL}/api/cart/delete/item/${id}`)
-    if (response.status === 204) {
-      return
+    if (response.status === 200 || response.status === 204) {
+      return response.data === 200 ? response.data : null
     } else {
-      return response.data
+      throw new Error(`Error delete item to cart: ${response.status}`)
     }
   } catch(e) {
     console.error(e)

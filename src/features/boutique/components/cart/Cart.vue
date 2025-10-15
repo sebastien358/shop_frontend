@@ -15,7 +15,7 @@ const state = reactive<{
 const props = defineProps<{
   cart: CartProductInterface[]
   total: number
-  itemtocart: number
+  itemToCart: string
 }>()
 
 // gestion des roles et redirection
