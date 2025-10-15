@@ -67,14 +67,14 @@ function logout() {
             <a href="#">Admin</a>
             <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
               <div class="d-flex flex-column dropdown-menu-link">
-                <router-link to="/admin">Admin</router-link>
-                <router-link to="/profile">Mon profil</router-link>
+                <router-link to="/product-form">Ajouter un produit</router-link>
+                <router-link to="/product-list">Liste des produits</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
           </li>
           <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
-            <a href="#">Profile</a>
+            <a href="#">Profil</a>
             <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
               <div class="d-flex flex-column dropdown-menu-link">
                 <router-link to="/profile">Mon profil</router-link>
@@ -116,16 +116,16 @@ function logout() {
           <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
             <div class="d-flex flex-column dropdown-menu-link">
               <router-link to="/admin">Admin</router-link>
-              <router-link to="/profile">Profil</router-link>
+              <router-link to="/product-list">Liste des produits</router-link>
             </div>
             <div class="dropdown-divider"></div>
           </div>
         </li>
         <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
-          <a href="#">Profile</a>
+          <a href="#">Profil</a>
           <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
             <div class="d-flex flex-column dropdown-menu-link">
-              <router-link to="/profile">Profil</router-link>
+              <router-link to="/profile">Mon profil</router-link>
               <router-link to="/command">Mes commandes</router-link>
             </div>
             <div class="dropdown-divider"></div>
@@ -191,10 +191,10 @@ function logout() {
   position: relative;
   .dropdown-menu {
     position: absolute;
-    border: var(--border);
-    padding: 10px;
+    box-shadow: var(--gray-2) 0px 6px 12px -2px, var(--gray-2) 0px 3px 7px -3px;
+    padding: 10px 12px;
     background-color: var(--text-primary-color);
-    top: 33px;
+    top: 34px;
     left: 0;
     visibility: hidden;
     opacity: 0.5;

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import ShopProductList from '@/features/boutique/components/shop/ShopProductList.vue'
 import ShopFilter from '@/features/boutique/components/shop/ShopFilter.vue'
+import type { ProductInterface } from '@/shared/interfaces'
 
 defineProps<{
-  products: products[]
+  products: ProductInterface[]
 }>()
 </script>
 

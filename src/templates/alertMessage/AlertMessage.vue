@@ -7,31 +7,35 @@ const router = useRouter()
 const props = defineProps<{
   message: string
   type: string
+  redirectTo: string
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-let resetTimeout;
+let timeoutId
 
-onMounted(() => {
+function alertMessage() {
   if (props.type === 'success') {
-    resetTimeout = setTimeout(() => {
-      router.push({path: '/payment'})
+    timeoutId = setTimeout(() => {
+      router.push({path: props.redirectTo})
       emit('close')
     }, 2000)
   } else {
-    resetTimeout = setTimeout(() => {
+    timeoutId = setTimeout(() => {
       emit('close')
     }, 3000)
   }
+}
+
+onMounted(() => {
+  alertMessage()
 })
 
 onUnmounted(() => {
-  clearTimeout(resetTimeout)
+  clearTimeout(timeoutId)
 })
-
 </script>
 
 <template>

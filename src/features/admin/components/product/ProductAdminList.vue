@@ -1,9 +1,8 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
-    <p>Form admin</p>
+    <h1>Product list</h1>
   </div>
 </template>
 

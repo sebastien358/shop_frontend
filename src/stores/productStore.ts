@@ -19,7 +19,7 @@ export const useProductStore = defineStore('product', {
     limit: 20
   }),
   actions: {
-    async getProduct(append = false) {
+    async getProduct(append = false): Promise<void> {
       try {
         this.isLoading = true
         const response = await axiosGetProducts(this.offset, this.limit)
@@ -35,7 +35,7 @@ export const useProductStore = defineStore('product', {
         this.isLoading = false
       }
     },
-    async loadProducts() {
+    async loadProducts(): Promise<true | undefined> {
       try {
         this.offset += this.limit
         await this.getProduct(true)
@@ -44,7 +44,7 @@ export const useProductStore = defineStore('product', {
         console.error(e)
       }
     },
-    async searchProducts(search: string) {
+    async searchProducts(search: string): Promise<void> {
       try {
         const response = await axiosSearchProducts(search)
         if (response) {
@@ -56,7 +56,7 @@ export const useProductStore = defineStore('product', {
         console.error(e)
       }
     },
-    async filteredPrice(priceRange: number[]) {
+    async filteredPrice(priceRange: number[]): Promise<void> {
       try {
         const [ minPrice, maxPrice ] = priceRange
         const response = await axiosFilteredPriceProducts(minPrice, maxPrice)
@@ -69,7 +69,7 @@ export const useProductStore = defineStore('product', {
         console.error(e)
       }
     },
-    async filteredCategory(category: string) {
+    async filteredCategory(category: string): Promise<void> {
       try {
         const response = await axiosFilteredCategoryProducts(category)
         if (category === 'all') {
@@ -83,7 +83,7 @@ export const useProductStore = defineStore('product', {
         console.error(e)
       }
     },
-    async initFilteredProducts() {
+    async initFilteredProducts(): Promise<void> {
       try {
         this.searchTerm = ''
         this.initPriceRange = [0, 4000]

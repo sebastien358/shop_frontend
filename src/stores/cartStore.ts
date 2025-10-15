@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import { useProductStore } from '@/stores/productStore.ts'
-import { axiosAddProductToCart, axiosDeleteProductToCart, axiosGetProductToCart } from '@/shared/services/user/cart.service.ts'
+import {
+  axiosAddItemToCart,
+  axiosAddProductToCart,
+  axiosDeleteItemToCart,
+  axiosGetProductToCart,
+} from '@/shared/services/user/cart.service.ts'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
@@ -16,12 +21,11 @@ export const useCartStore = defineStore('cart', {
     }
   },
   actions: {
-    async getProductToCart() {
+    async getProductToCart(): Promise<void> {
       try {
         const response = await axiosGetProductToCart()
         if (response) {
           this.cart = Array.isArray(response) ? response : [response]
-          console.log(this.cart)
         } else {
           console.log('La response est vide')
         }
@@ -29,7 +33,7 @@ export const useCartStore = defineStore('cart', {
         console.error(e)
       }
     },
-    async addProductToCart(id: number) {
+    async addProductToCart(id: number): Promise<void> {
       try {
         const productStore = useProductStore()
         const product = productStore.product.find((p) => p.id === id)
@@ -47,11 +51,22 @@ export const useCartStore = defineStore('cart', {
         console.error(e)
       }
     },
-    async deleteProductToCart(id: number) {
+    async addItemToCart(id: number): Promise<void> {
+      try {
+        const product = this.cart.find((p) => p.id === id)
+        if (product) {
+          await axiosAddItemToCart(id)
+          await this.getProductToCart()
+        }
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async deleteItemToCart(id: number): Promise<void> {
       try {
         const itemToCart = this.cart.find((p) => p.id === id)
         if (itemToCart) {
-          await axiosDeleteProductToCart(id)
+          await axiosDeleteItemToCart(id)
           await this.getProductToCart()
         }
       } catch(e) {

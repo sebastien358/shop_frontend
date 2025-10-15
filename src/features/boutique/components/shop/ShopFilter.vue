@@ -68,7 +68,7 @@ function resetFilters() {
       <div class="d-flex flex-column shop-filter_category">
         <h4>Filtrer par catégories</h4>
         <p @click="isSelectCategory(category)" v-for="(category, index) in productStore.category" :key="index">
-          <span :class="{'active': productStore.initCategory.includes(category)}">{{ category }}</span>
+          <span :class="{'active': productStore.initCategory.includes(category)}" class="category">{{ category }}</span>
         </p>
       </div>
     </div>
@@ -112,16 +112,17 @@ function resetFilters() {
     }
   }
   &_category {
-    margin-top: 15px;
+    margin-top: 14px;
     cursor: pointer;
-    font-size: 16px;
     line-height: 33px;
     h4 {
       font-size: 15px;
     }
     .active {
       color: var(--success-2);
-      text-decoration: underline;
+    }
+    .category {
+      font-size: 16px;
     }
   }
   &_reinitialisation {

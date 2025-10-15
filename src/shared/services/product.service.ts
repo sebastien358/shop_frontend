@@ -1,8 +1,9 @@
 import axios from 'axios'
+import type { ProductInterface } from '@/shared/interfaces'
 
 const BASE_URL = 'http://localhost:8000'
 
-export async function axiosGetProducts(offset: number, limit: number) {
+export async function axiosGetProducts(offset: number, limit: number): Promise<ProductInterface[] | ProductInterface> {
   try {
     const response = await axios.get(`${BASE_URL}/api/product/list`, {
       params: {
@@ -17,7 +18,7 @@ export async function axiosGetProducts(offset: number, limit: number) {
   }
 }
 
-export async function axiosSearchProducts(search: string) {
+export async function axiosSearchProducts(search: string): Promise<ProductInterface[] | ProductInterface> {
   try {
     const response = await axios.get(`${BASE_URL}/api/product/search`, {
       params: {
@@ -31,7 +32,7 @@ export async function axiosSearchProducts(search: string) {
   }
 }
 
-export async function axiosFilteredPriceProducts(minPrice: number, maxPrice: number) {
+export async function axiosFilteredPriceProducts(minPrice: number, maxPrice: number): Promise<ProductInterface[] | ProductInterface> {
   try {
     const response = await axios.get(`${BASE_URL}/api/product/filtered/price`, {
       params: {
@@ -46,7 +47,7 @@ export async function axiosFilteredPriceProducts(minPrice: number, maxPrice: num
   }
 }
 
-export async function axiosFilteredCategoryProducts(category: string) {
+export async function axiosFilteredCategoryProducts(category: string): Promise<ProductInterface[] | ProductInterface> {
   try {
     const response = await axios.get(`${BASE_URL}/api/product/filtered/category`, {
       params: {

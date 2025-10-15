@@ -4,6 +4,7 @@ import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/authStore.ts'
 import { useRouter } from 'vue-router'
 import Calc from '@/templates/calc/Calc.vue'
+import type { CartProductInterface } from '@/shared/interfaces'
 
 const state = reactive<{
   open: boolean
@@ -12,9 +13,9 @@ const state = reactive<{
 })
 
 const props = defineProps<{
-  cart: any
+  cart: CartProductInterface[]
   total: number
-  itemsToCart: number
+  itemtocart: number
 }>()
 
 // gestion des roles et redirection
@@ -24,7 +25,7 @@ const router = useRouter()
 
 function toGoCommand() {
   if (authStore.roleUser() && props.cart.length > 0) {
-    router.push({path: '/command'})
+    router.push({path: '/command-address'})
   } else if(authStore.roleUser() && props.cart.length === 0) {
     router.push({path: '/boutique'})
   } else {
@@ -42,7 +43,7 @@ function toGoCommand() {
       </div>
       <div v-else class="d-flex flex-column cart">
         <h4>Panier</h4>
-        <span :class="{'no-product': cart.length === 0}">{{ itemsToCart }}</span>
+        <span :class="{'no-product': cart.length === 0}">{{ itemToCart }}</span>
         <CartProductList :cart="cart" />
         <button @click="toGoCommand()" class="btn btn-success"> Commander ({{ total }})€</button>
       </div>
@@ -61,7 +62,7 @@ function toGoCommand() {
 .cart-fixed {
   z-index: 2;
   position: fixed;
-  bottom: 20px;
+  bottom: 15px;
   right: 20px;
   .toggle-cart {
     cursor: pointer;
@@ -73,7 +74,7 @@ function toGoCommand() {
     @include displayCenter();
     &.active {
       border: 3px solid #41B883;
-      box-shadow: #41B883 0px 4px 12px;
+      box-shadow: #41B883 0 4px 12px;
     }
     .nbr-products {
       position: absolute;
@@ -95,7 +96,6 @@ function toGoCommand() {
     }
   }
   .cart {
-
     width: 530px;
     padding: 15px 8px 6px 8px;
     border: var(--border);

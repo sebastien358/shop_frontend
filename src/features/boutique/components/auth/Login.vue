@@ -45,8 +45,8 @@ const onSubmit = handleSubmit(async (dataLogin, { resetForm }) => {
   }
 })
 
-const successMessage = ref('')
-const errorMessage = ref('')
+const successMessage = ref<string>('')
+const errorMessage = ref<string>('')
 
 let reset = () => {}
 
@@ -88,19 +88,10 @@ function handleResetForm() {
             {{ errorPassword }}
           </span>
         </div>
-        <div class="text-center">
-          <AlertMessage
-            v-if="successMessage"
-            :message="successMessage"
-            type="success"
-            @close="handleResetForm"
-          />
-          <AlertMessage
-            v-if="errorMessage"
-            :message="errorMessage"
-            type="error"
-            @close="closeFields"
-          />
+        <!-- Gestion messages de validations -->
+        <div class="d-flex align-items-center justify-content-center mt-10 alert-message">
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/boutique" @close="handleResetForm()" />
+          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
         </div>
         <button class="btn btn-primary" :disabled="isSubmitting">
           Soumettre

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import ShopProduct from '@/features/boutique/components/shop/ShopProduct.vue'
 import { useProductStore } from '@/stores/productStore.ts'
+import type { ProductInterface } from '@/shared/interfaces'
 
 const productStore = useProductStore()
 
 defineProps<{
-  products: any
+  products: ProductInterface[]
 }>()
 
 async function loadProducts() {

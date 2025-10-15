@@ -9,6 +9,11 @@ import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
 
 const commandUserStore = useCommandUserStore()
 
+const MESSAGES = {
+  SUCCESS_ADDRESS: 'Vos données ont bien été enregistrées',
+  INVALID_CREDENTIALS: 'Vos données n\'ont pas pu être enregistrées',
+}
+
 const schema = z.object({
   firstName: z
     .string({ message: 'Le prénom est requis' }),
@@ -48,10 +53,10 @@ const onSubmit = handleSubmit(async (dataAddress, {resetForm}) => {
   try {
     const response = await commandUserStore.addCommandAddress(dataAddress)
     if (response) {
-      setSuccessMessage('Add Command', resetForm)
+      setSuccessMessage(MESSAGES.SUCCESS_ADDRESS, resetForm)
       currentStep.value = 3
     } else {
-      setErrorMessage('Error command')
+      setErrorMessage(MESSAGES.INVALID_CREDENTIALS)
     }
   } catch(e) {
     console.error(e)
@@ -88,7 +93,6 @@ function handleResetForm() {
     <!-- Command Progress -->
     <div class="#">
       <CommandProgress :currentStep="currentStep" />
-
       <!-- Container -->
       <div class="container">
         <!-- Form Command -->
@@ -98,7 +102,7 @@ function handleResetForm() {
           <form @submit.prevent="onSubmit">
             <div class="d-flex align-items-center form-column">
               <div class="d-flex flex-column form-group" >
-                <label>Prénom</label>
+                <label class="label-firstname">Prénom</label>
                 <input v-model="firstName" type="text" />
                 <span v-if="errorFirstName" class="error-field">
                   {{ errorFirstName }}
@@ -130,7 +134,7 @@ function handleResetForm() {
             </div>
             <div class="d-flex align-items-center form-column">
               <div class="d-flex flex-column form-group" >
-                <label>Code postal</label>
+                <label class="label-zip-code">Code postal</label>
                 <input v-model="zipCode" type="text" />
                 <span v-if="errorZipCode" class="error-field">
                   {{ errorZipCode }}
@@ -146,7 +150,7 @@ function handleResetForm() {
             </div>
             <div class="d-flex align-items-center form-column">
               <div class="d-flex flex-column form-group" >
-                <label>Téléphone</label>
+                <label class="label-phone">Téléphone</label>
                 <input v-model="phoneNumber" type="tel" name="tel" />
                 <span v-if="errorPhoneNumber" class="error-field">
                   {{ errorPhoneNumber }}
@@ -167,8 +171,8 @@ function handleResetForm() {
             </div>
             <!-- Gestion messages de validations -->
             <div class="d-flex align-items-center justify-content-center mt-10 alert-message">
-              <AlertMessage v-if="successMessage" :message="successMessage" type="success" @close="handleResetForm()" />
-              <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" @close="closeFields()" />
+              <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
+              <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo=""  @close="closeFields()" />
             </div>
             <!-- Button validation de formulaire -->
             <div class="d-flex align-items-center flex-end">
@@ -184,6 +188,17 @@ function handleResetForm() {
 </template>
 
 <style scoped lang="scss">
+@mixin labelElems {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border: 1px solid black;
+  border-bottom: none;
+  height: 27px;
+  white-space: nowrap;
+}
+
 .address {
   padding: 20px;
   .container {
@@ -202,12 +217,12 @@ function handleResetForm() {
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
   .btn-black {
-    margin-top: 15px;
+    margin-top: 5px;
   }
   .form-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 20px;
+    column-gap: 15px;
     margin-top: 30px;
     .form-group {
       input, select, textarea {
@@ -221,31 +236,28 @@ function handleResetForm() {
         }
       }
       label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        border: 1px solid black;
-        border-bottom: none;
-        height: 27px;
-        max-width: 80px;
-        white-space: nowrap;
+        @include labelElems;
+        max-width: 45px;
+      }
+      .label-firstname {
+        @include labelElems;
+        max-width: 65px;
       }
       .label-address {
-        border: 1px solid black;
-        border-bottom: none;
+        @include labelElems;
         max-width: 140px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
       .label-complement-address {
-        border: 1px solid black;
-        border-bottom: none;
+        @include labelElems;
         max-width: 185px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      }
+      .label-zip-code {
+        @include labelElems;
+        max-width: 80px;
+      }
+      .label-phone {
+        @include labelElems;
+        max-width: 80px;
       }
       &:focus-within label {
         background-color: black;
