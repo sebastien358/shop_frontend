@@ -1,14 +1,19 @@
 import { defineStore } from 'pinia'
-import { useProductStore } from '@/stores/productStore.ts'
 import {
   axiosAddItemToCart,
   axiosAddProductToCart,
   axiosDeleteItemToCart,
   axiosGetProductToCart,
 } from '@/shared/services/user/cart.service.ts'
+import { useProductStore } from '@/stores/productStore.ts'
+import type { CartProductInterface } from '@/shared/interfaces'
+
+interface CartProductState {
+  cart: CartProductInterface[]
+}
 
 export const useCartStore = defineStore('cart', {
-  state: () => ({
+  state: (): CartProductState => ({
     cart: []
   }),
   getters: {

@@ -84,7 +84,7 @@ function resetFilters() {
 .shop-filter {
   border-right: var(--border);
   padding: 15px 10px 6px 10px;
-  height: 100%;
+  min-height: 100%;
   &_search {
     margin-bottom: 20px;
     h4 {

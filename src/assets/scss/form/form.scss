@@ -4,9 +4,24 @@
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
   width: 100%;
+  h3 {
+    font-size: 17px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  label {
+    font-size: 13px;
+    color: var(--gray-3);
+  }
+  input {
+    border: 0;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding: 9px;
+  }
   .error-field {
     color: var(--danger-1);
     font-size: 12px;
-    margin-top: 6px;
+    margin-top: 5px;
   }
 }

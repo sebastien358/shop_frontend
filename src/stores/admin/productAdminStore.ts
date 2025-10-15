@@ -1,13 +1,31 @@
 import { defineStore } from 'pinia'
-import { axiosAddProductAdmin } from '@/shared/services/admin/productAdmin.service.ts'
+import { axiosAddProductAdmin, axiosGetProductAdmin } from '@/shared/services/admin/productAdmin.service.ts'
 import { useProductStore } from '@/stores/productStore.ts'
+import type { ProductFormInterface, ProductInterface } from '@/shared/interfaces'
+
+interface ProductAdminState {
+  product: ProductInterface[]
+}
 
 export const useProductAdminStore = defineStore('productAdmin', {
-  state: () => ({
+  state: (): ProductAdminState => ({
     product: []
   }),
   actions: {
-    async addAdminProduct(dataProduct): Promise<void> {
+    async getAdminProducts(): Promise<void> {
+      try {
+        const response = await axiosGetProductAdmin()
+        if (response) {
+          const products = Array.isArray(response) ? response : [response]
+          this.product = products
+        } else {
+           console.log('La response est vide')
+        }
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async addAdminProduct(dataProduct: ProductFormInterface): Promise<void> {
       try {
         const { title, price, description, category, images } = dataProduct
         const formData = new FormData()
@@ -28,7 +46,7 @@ export const useProductAdminStore = defineStore('productAdmin', {
           return response
         }
       } catch(e) {
-        console.log(e)
+        console.error(e)
       }
     }
   }

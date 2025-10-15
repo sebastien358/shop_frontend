@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import CartProductList from '@/features/boutique/components/cart/CartProductList.vue'
-import { reactive } from 'vue'
 import { useAuthStore } from '@/stores/authStore.ts'
-import { useRouter } from 'vue-router'
 import Calc from '@/templates/calc/Calc.vue'
 import type { CartProductInterface } from '@/shared/interfaces'
+import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
 
 const state = reactive<{
   open: boolean

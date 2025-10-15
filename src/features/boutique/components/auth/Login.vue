@@ -73,6 +73,7 @@ function handleResetForm() {
 <template>
   <div class="d-flex align-items-center justify-content-center login">
     <div class="container-form">
+      <h3>Se connecter</h3>
       <form @submit.prevent="onSubmit">
         <div class="d-flex flex-column form-group">
           <label for="email">Email</label>
@@ -89,13 +90,11 @@ function handleResetForm() {
           </span>
         </div>
         <!-- Gestion messages de validations -->
-        <div class="d-flex align-items-center justify-content-center mt-10 alert-message">
+        <div class="d-flex align-items-center justify-content-center alert-message">
           <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/boutique" @close="handleResetForm()" />
           <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
         </div>
-        <button class="btn btn-primary" :disabled="isSubmitting">
-          Soumettre
-        </button>
+        <button class="btn btn-primary" :disabled="isSubmitting">Soumettre</button>
       </form>
     </div>
   </div>
@@ -104,5 +103,20 @@ function handleResetForm() {
 <style scoped lang="scss">
 .login {
   height: 100%;
+  padding: 10px;
+  .container-form {
+    max-width: 380px;
+    padding: 22px 15px 10px 15px;
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+    button {
+      margin-top: 6px;
+    }
+  }
 }
 </style>

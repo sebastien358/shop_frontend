@@ -19,7 +19,7 @@ async function loadProducts() {
 </script>
 
 <template>
-  <div class="d-flex flex-column">
+  <div v-if="products.length > 0" class="d-flex flex-column">
     <div class="shop-list">
       <ShopProduct
         v-for="product in products"

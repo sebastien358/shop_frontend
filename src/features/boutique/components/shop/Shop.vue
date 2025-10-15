@@ -10,10 +10,11 @@ defineProps<{
 
 <template>
   <div class="shop">
-    <div>
-      <ShopFilter class="shop-filter" />
+    <div class="shop-filter">
+      <ShopFilter />
     </div>
-    <div>
+    <div class="d-flex flex-column shop-content">
+      <button class="btn btn-primary">Filtrer les produits</button>
       <ShopProductList :products="products" class="shop-product-list" />
     </div>
   </div>
@@ -25,24 +26,35 @@ defineProps<{
 .shop {
   display: grid;
   grid-template-columns: 240px 1fr;
+  .shop-filter {
+    min-height: 100%;
+  }
   .shop-product-list {
     overflow-y: auto;
     height: calc(100vh - 96px);
-    padding: 10px;
+    padding: 0 10px 10px 10px;
     @include m.sm {
-      padding: 10px;
+      padding: 0 10px 10px 10px;
     }
     @include m.md {
-      padding: 10px;
+      padding: 0 10px 10px 10px;
     }
     @include m.lg {
-      padding: 15px 15px 10px 15px;
+      padding: 0 15px 10px 15px;
     }
     @include m.xl {
       padding: 13px 13px 10px 13px;
     }
     @include m.xxl {
       padding: 15px 15px 10px 15px;
+    }
+  }
+  .shop-content {
+    button {
+      margin: 10px 10px;
+      @include m.lg {
+        display: none;
+      }
     }
   }
 }

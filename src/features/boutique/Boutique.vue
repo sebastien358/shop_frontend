@@ -49,7 +49,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="boutique">
     <Shop
       :products="products"
     />

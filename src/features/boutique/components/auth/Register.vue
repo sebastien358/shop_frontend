@@ -81,45 +81,35 @@ function handleResetForm() {
 <template>
   <div class="d-flex align-items-center justify-content-center register">
     <div class="container-form">
+      <h3>S'inscrire</h3>
       <form @submit.prevent="onSubmit">
         <div class="d-flex flex-column form-group">
           <label for="email">Email</label>
           <input v-model="email" type="text" />
-          <span v-if="errorEmail" class="errorField">
+          <span v-if="errorEmail" class="error-field">
             {{ errorEmail }}
           </span>
         </div>
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column form-group">
           <label for="password">Mot de passe</label>
           <input v-model="password" type="password" />
-          <span v-if="errorPassword" class="errorField">
+          <span v-if="errorPassword" class="error-field">
           {{ errorPassword }}
           </span>
         </div>
         <div class="d-flex flex-column">
           <label for="password">Mot de passe</label>
           <input v-model="passwordConfirm" type="password" />
-          <span v-if="errorPasswordConfirm" class="errorField">
+          <span v-if="errorPasswordConfirm" class="error-field">
           {{ errorPasswordConfirm }}
           </span>
         </div>
+        <!-- Gestion messages de validations -->
         <div class="text-center">
-          <AlertMessage
-            v-if="successMessage"
-            :message="successMessage"
-            type="success"
-            @close="handleResetForm"
-          />
-          <AlertMessage
-            v-if="errorMessage"
-            :message="errorMessage"
-            type="error"
-            @close="closeAlert()"
-          />
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="" @close="handleResetForm" />
+          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeAlert()" />
         </div>
-        <button class="btn btn-primary" :disabled="isSubmitting">
-          Soumettre
-        </button>
+        <button class="btn btn-primary" :disabled="isSubmitting">Soumettre</button>
       </form>
     </div>
   </div>
@@ -128,5 +118,20 @@ function handleResetForm() {
 <style scoped lang="scss">
 .register {
   height: 100%;
+  padding: 10px;
+  .container-form {
+    max-width: 380px;
+    padding: 22px 15px 10px 15px;
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+    button {
+      margin-top: 6px;
+    }
+  }
 }
 </style>

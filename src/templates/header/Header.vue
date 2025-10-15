@@ -194,12 +194,12 @@ function logout() {
     box-shadow: var(--gray-2) 0px 6px 12px -2px, var(--gray-2) 0px 3px 7px -3px;
     padding: 10px 12px;
     background-color: var(--text-primary-color);
-    top: 34px;
+    top: 35px;
     left: 0;
     visibility: hidden;
     opacity: 0.5;
     transition: opacity 200ms ease, visibility 200ms;
-    width: 240px;
+    width: 290px;
     &.show {
       opacity: 1;
       visibility: visible;

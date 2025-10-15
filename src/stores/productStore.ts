@@ -6,8 +6,20 @@ import {
   axiosSearchProducts,
 } from '@/shared/services/product.service.ts'
 
+interface ProductState {
+  product: object,
+  isLoading: boolean,
+  searchTerm: string,
+  priceRange: [[number, number], [number, number], [number, number], [number, number], [number, number]],
+  initPriceRange: [number, number],
+  category: [string, string, string, string],
+  initCategory: [string],
+  offset: number,
+  limit: number
+}
+
 export const useProductStore = defineStore('product', {
-  state: () => ({
+  state: (): ProductState => ({
     product: [],
     isLoading: true,
     searchTerm: '',
