@@ -8,7 +8,7 @@ import Footer from '@/templates/footer/Footer.vue'
   <div class="app-content">
     <Header class="header" />
     <div class="views">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{Component}">
       <template v-if="Component">
         <Component :is="Component" />
       </template>

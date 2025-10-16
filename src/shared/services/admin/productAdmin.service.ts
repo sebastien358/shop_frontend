@@ -31,3 +31,18 @@ export async function axiosAddProductAdmin(formData: ProductFormInterface): Prom
     throw e
   }
 }
+
+export async function axiosdeleteProductAdmin(id: ProductFormInterface): Promise<ProductFormInterface> {
+  try {
+    const response = await axios.delete(`${BASE_URL}/api/admin/product/delete/${id}`)
+    if (response.status === 200 || response.status === 204) {
+      return response.data
+    } else {
+      throw new Error(`error add product: ${response.status}`)
+   }
+  } catch(e) {
+    console.log(e)
+    throw e
+  }
+}
+

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { axiosAddProductAdmin, axiosGetProductAdmin } from '@/shared/services/admin/productAdmin.service.ts'
+import { axiosAddProductAdmin, axiosdeleteProductAdmin, axiosGetProductAdmin } from '@/shared/services/admin/productAdmin.service.ts'
 import { useProductStore } from '@/stores/productStore.ts'
 import type { ProductFormInterface, ProductInterface } from '@/shared/interfaces'
 
@@ -47,6 +47,17 @@ export const useProductAdminStore = defineStore('productAdmin', {
           this.product.push(response)
           productStore.product.push(response)
           return response
+        }
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async deleteProduct(id: ProductInterface) {
+      try {
+        const response = await axiosdeleteProductAdmin(id)
+        if (response) {
+          this.product = this.product.filter((p) => p.id !== id)
+          await this.getAdminProducts()
         }
       } catch(e) {
         console.error(e)

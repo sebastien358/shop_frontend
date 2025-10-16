@@ -31,7 +31,7 @@ const steps = [
 
 <style scoped lang="scss">
   .command-progress {
-    margin: 20px 0 10px 0;
+    margin: 30px 0 10px 0;
     .step {
       border: var(--border);
       border-radius: 50%;

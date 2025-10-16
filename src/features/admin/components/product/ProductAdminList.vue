@@ -52,6 +52,16 @@ onMounted(async () => {
     console.error(e)
   }
 })
+
+// Supression d'un produit
+
+async function deleteProduct(id: number) {
+   try {
+    await productAdminStore.deleteProduct(id)
+  } catch(e) {
+    console.error(e)
+  }
+}
 </script>
 
 <template>
@@ -69,16 +79,11 @@ onMounted(async () => {
         </div>
         <div class="d-flex align-items-center">
           <button class="btn btn-success">Modifier</button>
-          <button class="btn btn-danger">Supprimer</button>
+          <button @click="deleteProduct(product.id)" class="btn btn-danger">Supprimer</button>
         </div>
       </div>
     </div>
-    <Pagination 
-      :currentPage="currentPage" 
-      :totalPages="totalPages" 
-      @previous-page="previousPage()" 
-      @next-Page="nextPage()" 
-      />
+    <Pagination :currentPage="currentPage" :totalPages="totalPages" @previous-page="previousPage()" @next-Page="nextPage()" />
   </div>
 </template>
 

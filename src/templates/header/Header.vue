@@ -198,7 +198,7 @@ function logout() {
     left: 0;
     visibility: hidden;
     opacity: 0.5;
-    transition: opacity 200ms ease, visibility 200ms;
+    transition: opacity 200ms ease, visibility 200ms ease;
     width: 290px;
     &.show {
       opacity: 1;

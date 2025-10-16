@@ -151,7 +151,7 @@ function handleResetForm() {
           </span>
         </div>
         <div class="alert-message">
-          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="" @close="handleResetForm" />
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="" @close="handleResetForm()" />
           <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
         </div>
         <div class="d-flex align-items-center flex-end">
@@ -164,18 +164,14 @@ function handleResetForm() {
 
 <style scoped lang="scss">
 .product-form {
-  height: 100%;
   padding: 20px;
+  margin-top: 150px;
   .container-form {
-    height: 100%;
     max-width: 1000px;
     padding: 30px 20px 15px 20px;
     h3 {
       font-size: 20px;
       margin-bottom: 5px;
-    }
-    .btn-black {
-      margin-top: 10px;
     }
     .alert-message {
       margin-top: 15px;

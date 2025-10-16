@@ -4,10 +4,30 @@ import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import AlertMessage from '@/templates/alertMessage/AlertMessage.vue'
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
 
 const commandUserStore = useCommandUserStore()
+
+// Récupération des commandes utilisateur connecté
+
+const commands = computed(() => commandUserStore.command)
+
+async function loadCommands() {
+  try {
+    await commandUserStore.getCommandUser()
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+onMounted(async () => {
+  try {
+    await loadCommands()
+  } catch(e) {
+    console.error(e)
+  }
+})
 
 const MESSAGES = {
   SUCCESS_ADDRESS: 'Vos données ont bien été enregistrées',
@@ -86,103 +106,48 @@ function handleResetForm() {
   closeFields()
   reset()
 }
+
+const fields = [
+  { label: 'Prénom', css:'label-firstname', type: 'text', name: 'firstName', value: firstName, errorMessage: errorFirstName },
+  { label: 'Nom', css:'label-lastname', type: 'text', name: 'lastName', value: lastName, errorMessage: errorLastName },
+  { label: 'Adresse (numéro et rue)', css: 'label-address', type: 'text', name: 'address', value: address, errorMessage: errorAddress },
+  { label: 'Complément d\'adresse (facultatif)', css: 'label-complement-address', type: 'text', name: 'addressComplement', value: addressComplement, errorMessage: errorAddressComplement },
+  { label: 'Code postal', css: 'label-zip-code', type: 'text', name: 'zipCode', value: zipCode, errorMessage: errorZipCode },
+  { label: 'Ville', css: 'label-city', type: 'text', name: 'city', value: city, errorMessage: errorCity },
+  { label: 'Téléphone', css: 'label-tel', type: 'tel', name: 'phoneNumber', value: phoneNumber, errorMessage: errorPhoneNumber },
+  { label: 'Pays', css: 'label-country', type: 'select', name: 'country', value: country, errorMessage: errorCountry },
+]
 </script>
 
 <template>
-  <div class="d-flex justify-content-center address">
-    <!-- Command Progress -->
-    <div class="#">
-      <CommandProgress :currentStep="currentStep" />
-      <!-- Container -->
-      <div class="container">
-        <!-- Form Command -->
-        <h2>Adresse de livraison</h2>
-        <!-- Form Address -->
-        <div class="container-form">
-          <form @submit.prevent="onSubmit">
-            <div class="d-flex align-items-center form-column">
-              <div class="d-flex flex-column form-group" >
-                <label class="label-firstname">Prénom</label>
-                <input v-model="firstName" type="text" />
-                <span v-if="errorFirstName" class="error-field">
-                  {{ errorFirstName }}
-                </span>
-              </div>
-              <div class="d-flex flex-column form-group" >
-                <label>Nom</label>
-                <input v-model="lastName" type="text" />
-                <span v-if="errorLastName" class="error-field">
-                  {{ errorLastName }}
-                </span>
-              </div>
+  <CommandProgress :currentStep="currentStep" />
+  <div class="d-flex align-items-center justify-content-center address">
+    <div class="container-form">
+      <h2>Entrer vos données</h2>
+      <form @submit.prevent="onSubmit">  
+        <div class="form-column">
+          <div v-for="(field, index) in fields" :key="index">
+            <div class="d-flex flex-column form-group">
+              <label :class="field.css">{{ field.label }}</label>
+              <input v-if="field.type !== 'select'" v-model="field.value.value" :type="field.type" :name="field.name" />
+              <select v-else v-model="field.value.value">
+                <option value="">-- Veuillez sélectionner un pays --</option>
+                <option value="germany">Allemagne</option>
+                <option value="belgium">Belqique</option>
+                <option value="french">France</option>
+              </select>
             </div>
-            <div class="d-flex align-items-center form-column">
-              <div class="d-flex flex-column form-group" >
-                <label class="label-address">Adresse (numéro et rue)</label>
-                <input v-model="address" type="text" />
-                <span v-if="errorAddress" class="error-field">
-                  {{ errorAddress }}
-                </span>
-              </div>
-              <div class="d-flex flex-column form-group">
-                <label class="label-complement-address">Complément d'adresse (facultatif)</label>
-                <input v-model="addressComplement" type="text" />
-                <span v-if="errorAddressComplement" class="error-field">
-                  {{ errorAddressComplement }}
-                </span>
-              </div>
-            </div>
-            <div class="d-flex align-items-center form-column">
-              <div class="d-flex flex-column form-group" >
-                <label class="label-zip-code">Code postal</label>
-                <input v-model="zipCode" type="text" />
-                <span v-if="errorZipCode" class="error-field">
-                  {{ errorZipCode }}
-                </span>
-              </div>
-              <div class="d-flex flex-column form-group">
-                <label>Ville</label>
-                <input v-model="city" type="text" />
-                <span v-if="errorCity" class="error-field">
-                  {{ errorCity }}
-                </span>
-              </div>
-            </div>
-            <div class="d-flex align-items-center form-column">
-              <div class="d-flex flex-column form-group" >
-                <label class="label-phone">Téléphone</label>
-                <input v-model="phoneNumber" type="tel" name="tel" />
-                <span v-if="errorPhoneNumber" class="error-field">
-                  {{ errorPhoneNumber }}
-                </span>
-              </div>
-              <div class="d-flex flex-column form-group">
-                <label for="country">Pays</label>
-                <select v-model="country" name="country">
-                  <option value="">--Please choose an option--</option>
-                  <option value="french">France</option>
-                  <option value="belgium">Belgique</option>
-                  <option value="germany">Allemage</option>
-                </select>
-                <span v-if="errorCountry" class="error-field">
-                  {{ errorCountry }}
-                </span>
-              </div>
-            </div>
-            <!-- Gestion messages de validations -->
-            <div class="d-flex align-items-center justify-content-center mt-10 alert-message">
-              <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
-              <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo=""  @close="closeFields()" />
-            </div>
-            <!-- Button validation de formulaire -->
-            <div class="d-flex align-items-center flex-end">
-              <button class="btn btn-black" :disabled="isSubmitting">
-                Enregistrer l'adresse
-              </button>
-            </div>
-          </form>
+            <span v-if="field.errorMessage.value" class="error-field">{{ field.errorMessage.value }}</span>
+          </div>
         </div>
-      </div>
+        <div class="text-center alert-message">
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
+          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
+        </div>
+        <div class="d-flex align-items-center flex-end">
+          <button class="btn btn-black" :disabled="isSubmitting">Enregister la commande</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -201,6 +166,7 @@ function handleResetForm() {
 
 .address {
   padding: 20px;
+  margin-top: 150px;
   .container {
     width: 1200px;
     margin-top: 100px;
@@ -212,24 +178,26 @@ function handleResetForm() {
 }
 
 .container-form {
-  padding: 10px 30px 20px 30px;
+  padding: 30px 30px 20px 30px;
   border: var(--border);
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
+  width: 1300px;
   .btn-black {
-    margin-top: 5px;
+    margin-top: 10px;
   }
   .form-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 15px;
-    margin-top: 30px;
+    column-gap: 17px;
     .form-group {
+      margin-top: 25px;
       input, select, textarea {
         border: 1px solid black;
         padding: 12px;
         outline: none;
         background-color: white;
+        border-radius: 0;
         &:focus {
           border: 3px solid black;
           padding: 11px;
@@ -255,7 +223,7 @@ function handleResetForm() {
         @include labelElems;
         max-width: 80px;
       }
-      .label-phone {
+      .label-tel {
         @include labelElems;
         max-width: 80px;
       }

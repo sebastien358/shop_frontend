@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cartStore.ts'
+import { useAuthStore } from '@/stores/authStore.ts'
 import type { ProductInterface } from '@/shared/interfaces'
+import { useRouter } from 'vue-router'
 
 const cartStore = useCartStore()
+const authStore = useAuthStore()
+
+const router = useRouter()
 
 defineProps<{
   product: ProductInterface
@@ -10,7 +15,11 @@ defineProps<{
 
 async function addProductToCart(id: number) {
   try {
-    await cartStore.addProductToCart(id)
+    if (!authStore.roleUser()) {
+      router.push({path: '/login'})
+    } else {
+      await cartStore.addProductToCart(id)
+    }
   } catch(e) {
     console.error(e)
   }
