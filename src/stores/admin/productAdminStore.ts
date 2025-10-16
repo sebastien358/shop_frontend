@@ -4,20 +4,23 @@ import { useProductStore } from '@/stores/productStore.ts'
 import type { ProductFormInterface, ProductInterface } from '@/shared/interfaces'
 
 interface ProductAdminState {
-  product: ProductInterface[]
+  product: ProductInterface[],
+  countProduct: number
 }
 
 export const useProductAdminStore = defineStore('productAdmin', {
   state: (): ProductAdminState => ({
-    product: []
+    product: [],
+    countProduct: 0
   }),
   actions: {
-    async getAdminProducts(): Promise<void> {
+    async getAdminProducts(currentPage: number, itemPerPage: number): Promise<void> {
       try {
-        const response = await axiosGetProductAdmin()
+        const response = await axiosGetProductAdmin(currentPage, itemPerPage)
         if (response) {
-          const products = Array.isArray(response) ? response : [response]
+          const products: ProductInterface[] = response.products
           this.product = products
+          this.countProduct = response.total
         } else {
            console.log('La response est vide')
         }

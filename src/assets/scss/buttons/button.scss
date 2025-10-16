@@ -32,4 +32,13 @@
       background-color: #3d3d3d;
     }
   }
+  &-pagination {
+    padding: 10px;
+    font-size: 10px;
+    background-color: #4b4b4b;
+    width: 72px;
+    &:hover {
+      background-color: #3d3d3d;
+    }
+  }
 }

@@ -1,18 +1,49 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useProductAdminStore } from '@/stores/admin/productAdminStore.ts'
+import Pagination from '../../../../templates/pagination/Pagination.vue'
+import { ref } from 'vue'
 
 const productAdminStore = useProductAdminStore()
 
 const products = computed(() => productAdminStore.product)
 
+const currentPage = ref<number>(1)
+const itemPerPage = ref<number>(20)
+
 async function loadAdminProduct() {
   try {
-    await productAdminStore.getAdminProducts()
+    await productAdminStore.getAdminProducts(currentPage.value, itemPerPage.value)
   } catch(e) {
     console.error(e)
   }
 }
+
+async function previousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+  try {
+    await productAdminStore.getAdminProducts(currentPage.value, itemPerPage.value)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+async function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+  try {
+    await productAdminStore.getAdminProducts(currentPage.value, itemPerPage.value)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+const totalPages = computed(() => 
+  Math.ceil(productAdminStore.countProduct / itemPerPage.value)
+)
 
 onMounted(async () => {
   try {
@@ -24,7 +55,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="products.length > 0" class="product">
+  <div v-if="products.length && products.length > 0" class="product">
     <div v-for="product in products" :key="product.id">
       <div class="d-flex align-items-center space-between product_list">
         <div class="d-flex align-items-center">
@@ -42,12 +73,18 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <Pagination 
+      :currentPage="currentPage" 
+      :totalPages="totalPages" 
+      @previous-page="previousPage()" 
+      @next-Page="nextPage()" 
+      />
   </div>
 </template>
 
 <style scoped lang="scss">
 .product {
-  padding: 20px;
+  padding: 20px 20px 10px 20px;
   overflow-y: auto;
   height: calc(100vh - 96px);
   display: flex;

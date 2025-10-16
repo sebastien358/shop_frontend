@@ -167,6 +167,7 @@ function handleResetForm() {
   height: 100%;
   padding: 20px;
   .container-form {
+    height: 100%;
     max-width: 1000px;
     padding: 30px 20px 15px 20px;
     h3 {

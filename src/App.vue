@@ -7,11 +7,13 @@ import Footer from '@/templates/footer/Footer.vue'
 <template>
   <div class="app-content">
     <Header class="header" />
-    <router-view v-slot="{Component}">
+    <div class="views">
+    <router-view v-slot="{ Component }">
       <template v-if="Component">
         <Component :is="Component" />
       </template>
     </router-view>
+    </div>
     <Footer class="footer" />
   </div>
 </template>

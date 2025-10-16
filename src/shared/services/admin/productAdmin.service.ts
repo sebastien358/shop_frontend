@@ -3,14 +3,15 @@ import type { ProductFormInterface, ProductInterface } from '@/shared/interfaces
 
 const BASE_URL = 'http://localhost:8000'
 
-export async function axiosGetProductAdmin(): Promise<ProductInterface[] | ProductInterface> {
+export async function axiosGetProductAdmin(currentPage: number, itemPerPage: number): Promise<ProductInterface[] | ProductInterface> {
   try {
-    const response = await axios.get(`${BASE_URL}/api/admin/product/list`)
-    if (response.status >= 200 && response.status < 300) {
-      return response.data
-    } else {
-      throw new Error(`error recovery products: ${response.status}`)
-    }
+    const response = await axios.get(`${BASE_URL}/api/admin/product/list`, {
+      params: {
+        page: currentPage, 
+        limit: itemPerPage
+      }
+    })
+    return response.data
   } catch(e) {
     console.log(e)
     throw e
