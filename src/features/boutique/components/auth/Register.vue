@@ -18,10 +18,8 @@ const successMessage = ref('')
 const errorMessage = ref('')
 
 const schema = z.object({
-  email: z
-    .string({ message: 'Email requis' }).email(),
-  password: z
-    .string({ message: 'Mot de passe requis' }),
+  email: z.string({ message: 'Email requis' }).email(),
+  password: z.string({ message: 'Mot de passe requis' }),
   passwordConfirm: z
     .string({ message: 'Confirmation de mot de passe requise' })
     .refine((value) => value === password.value, {
@@ -76,32 +74,27 @@ function handleResetForm() {
   closeAlert()
   reset()
 }
+
+const fields = [
+  { label: 'Email', type: 'text', value: email, errorMessage: errorEmail },
+  { label: 'Mot de passe', type: 'password', value: password, errorMessage: errorPassword },
+  { label: 'Confirmation de mot de passe', type: 'password', value: passwordConfirm, errorMessage: errorPasswordConfirm }
+]
 </script>
 
 <template>
   <div class="d-flex align-items-center justify-content-center register">
+    <!-- Formulaire de crétion d'un utlisateur -->
     <div class="container-form">
       <h3>S'inscrire</h3>
       <form @submit.prevent="onSubmit">
-        <div class="d-flex flex-column form-group">
-          <label for="email">Email</label>
-          <input v-model="email" type="text" />
-          <span v-if="errorEmail" class="error-field">
-            {{ errorEmail }}
-          </span>
-        </div>
-        <div class="d-flex flex-column form-group">
-          <label for="password">Mot de passe</label>
-          <input v-model="password" type="password" />
-          <span v-if="errorPassword" class="error-field">
-          {{ errorPassword }}
-          </span>
-        </div>
-        <div class="d-flex flex-column">
-          <label for="password">Mot de passe</label>
-          <input v-model="passwordConfirm" type="password" />
-          <span v-if="errorPasswordConfirm" class="error-field">
-          {{ errorPasswordConfirm }}
+        <div v-for="(field, index) in fields" :key="index">
+          <div class="d-flex flex-column form-group">
+            <label>{{ field.label }}</label>
+            <input v-model="field.value.value" :type="fields.type" />
+          </div>
+          <span v-if="field.errorMessage" class="error-field">
+            {{ field.errorMessage }}
           </span>
         </div>
         <!-- Gestion messages de validations -->
@@ -120,14 +113,22 @@ function handleResetForm() {
   height: 100%;
   padding: 10px;
   .container-form {
-    max-width: 380px;
+    max-width: 440px;
     padding: 22px 15px 10px 15px;
+    h3 {
+      text-align: center
+    }
     .form-group {
-      margin-bottom: 15px;
+      margin-top: 15px;
     }
     label {
       margin-bottom: 3px;
       font-size: 12px;
+    }
+    input {
+      padding: 9px;
+      border: var(--border);
+      border-radius: var(--border-radius);
     }
     button {
       margin-top: 6px;

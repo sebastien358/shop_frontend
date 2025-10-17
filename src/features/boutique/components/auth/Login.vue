@@ -45,6 +45,8 @@ const onSubmit = handleSubmit(async (dataLogin, { resetForm }) => {
   }
 })
 
+// Messages validation form
+
 const successMessage = ref<string>('')
 const errorMessage = ref<string>('')
 
@@ -59,40 +61,43 @@ function setErrorMessage(message: string) {
   errorMessage.value = message
 }
 
-function closeFields() {
+function closeAlert() {
   successMessage.value = ''
   errorMessage.value = ''
 }
 
 function handleResetForm() {
-  closeFields()
+  closeAlert()
   reset()
 }
+
+// Fields form
+
+const fields = [
+  { label: 'Email', type: 'text', value: email, errorMessage: errorEmail },
+  { label: 'Mot de passe', type: 'password', value: password, errorMessage: errorPassword },
+]
 </script>
 
 <template>
   <div class="d-flex align-items-center justify-content-center login">
+    <!-- Formulaire de connexion d'un utlisateur -->
     <div class="container-form">
-      <h3>Se connecter</h3>
+      <h3>Se Connecter</h3>
       <form @submit.prevent="onSubmit">
-        <div class="d-flex flex-column form-group">
-          <label for="email">Email</label>
-          <input v-model="email" type="text" />
-          <span v-if="errorEmail" class="error-field">
-            {{ errorEmail }}
+        <div v-for="(field, index) in fields" :key="index">
+          <div class="d-flex flex-column form-group">
+            <label>{{ field.label }}</label>
+            <input v-model="field.value.value" :type="fields.type" />
+          </div>
+          <span v-if="field.errorMessage" class="error-field">
+            {{ field.errorMessage }}
           </span>
         </div>
-        <div class="d-flex flex-column">
-          <label for="password">Mot de passe</label>
-          <input v-model="password" type="password" />
-          <span v-if="errorPassword" class="error-field">
-            {{ errorPassword }}
-          </span>
-        </div>
-        <!-- Gestion messages de validations -->
-        <div class="d-flex align-items-center justify-content-center alert-message">
-          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/boutique" @close="handleResetForm()" />
-          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
+        <!-- Gestion messages de la validations -->
+        <div class="text-center">
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/boutique" @close="handleResetForm" />
+          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeAlert()" />
         </div>
         <button class="btn btn-primary" :disabled="isSubmitting">Soumettre</button>
       </form>
@@ -105,14 +110,22 @@ function handleResetForm() {
   height: 100%;
   padding: 10px;
   .container-form {
-    max-width: 380px;
+    max-width: 440px;
     padding: 22px 15px 10px 15px;
+    h3 {
+      text-align: center
+    }
     .form-group {
-      margin-bottom: 15px;
+      margin-top: 15px;
     }
     label {
       margin-bottom: 3px;
       font-size: 12px;
+    }
+    input {
+      padding: 9px;
+      border: var(--border);
+      border-radius: var(--border-radius);
     }
     button {
       margin-top: 6px;

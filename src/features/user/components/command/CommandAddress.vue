@@ -5,6 +5,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import AlertMessage from '@/templates/alertMessage/AlertMessage.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
+import { useCartStore } from '@/stores/cartStore.ts'
 import * as z from 'zod'
 import { useRouter } from 'vue-router'
 
@@ -14,7 +15,9 @@ const commandUserStore = useCommandUserStore()
 const router = useRouter()
 
 const commands = computed(() => commandUserStore.command)
-const totalPrice = computed(() => commandUserStore.totalPrice)
+
+const cartStore = useCartStore()
+const totalPrice = computed(() => cartStore.total)
 
 async function loadCommands() {
   try {
@@ -97,13 +100,13 @@ function setErrorMessage(message: string) {
   errorMessage.value = message
 }
 
-function closeFields() {
+function closeAlert() {
   successMessage.value = ''
   errorMessage.value = ''
 }
 
 function handleResetForm() {
-  closeFields()
+  closeAlert()
   reset()
 }
 
@@ -156,7 +159,7 @@ const fields = [
           <!-- Alert message -->
           <div class="text-center alert-message">
             <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
-            <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
+            <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeAlert()" />
           </div>
           <!-- Button valdation form -->
           <div class="d-flex align-items-center flex-end">

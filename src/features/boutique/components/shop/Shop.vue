@@ -10,9 +10,7 @@ defineProps<{
 
 <template>
   <div class="shop">
-    <div class="shop-filter">
-      <ShopFilter />
-    </div>
+    <ShopFilter class="shop-filter" />
     <div class="d-flex flex-column shop-content">
       <button class="btn btn-primary">Filtrer les produits</button>
       <ShopProductList :products="products" class="shop-product-list" />
@@ -25,9 +23,9 @@ defineProps<{
 
 .shop {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 240px auto;
   .shop-filter {
-    min-height: 100%;
+    height: 100%;
   }
   .shop-product-list {
     overflow-y: auto;

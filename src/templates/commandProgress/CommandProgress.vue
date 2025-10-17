@@ -21,7 +21,9 @@ const steps = [
             <div class="d-flex align-items-center justify-content-center flex-column step" :class="{'step-is-login-user': step.num <= currentStep}">
               {{ step.num }}
             </div>
-            <span>{{ step.label }}</span>
+            <span>
+              {{ step.label }}
+            </span>
           </div>
         </div>
       </div>

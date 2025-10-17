@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import Header from '@/templates/header/Header.vue'
 import Footer from '@/templates/footer/Footer.vue'
 </script>
@@ -22,8 +21,8 @@ import Footer from '@/templates/footer/Footer.vue'
 .app-content {
   display: grid;
   grid-template-areas: 'header' 'views' 'footer';
-  grid-template-rows: 48px auto 48px;
-  height: 100vh;
+  grid-template-rows: 48px 1fr 48px;
+  min-height: 100vh;
 }
 
 .header {
@@ -32,6 +31,7 @@ import Footer from '@/templates/footer/Footer.vue'
 
 .views {
   grid-area: views;
+  min-height: 100%;
 }
 
 .footer {
