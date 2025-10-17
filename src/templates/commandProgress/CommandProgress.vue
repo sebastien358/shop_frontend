@@ -32,6 +32,14 @@ const steps = [
 <style scoped lang="scss">
   .command-progress {
     margin: 30px 0 10px 0;
+    .separator {
+      border: 1px dashed var(--gray-3);
+      width: 150px;
+      margin: 0 5px;
+      &.separator-is-login-user {
+        border: 1px solid var(--success-2);
+      }
+    }
     .step {
       border: var(--border);
       border-radius: 50%;
@@ -44,14 +52,6 @@ const steps = [
         background-color: #38ada9;
         color: var(--text-primary-color);
         font-weight: bold;
-      }
-    }
-    .separator {
-      border: 1px dashed var(--gray-3);
-      width: 150px;
-      margin: 0 5px;
-      &.separator-is-login-user {
-        border: 1px solid var(--success-2);
       }
     }
     span {

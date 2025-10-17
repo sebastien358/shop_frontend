@@ -2,16 +2,20 @@
 import CommandProgress from '@/templates/commandProgress/CommandProgress.vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import * as z from 'zod'
 import AlertMessage from '@/templates/alertMessage/AlertMessage.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
-
-const commandUserStore = useCommandUserStore()
+import * as z from 'zod'
+import { useRouter } from 'vue-router'
 
 // Récupération des commandes utilisateur connecté
 
-const commands = computed(() => commandUserStore.command)
+const commandUserStore = useCommandUserStore()
+const router = useRouter()
+
+const commands = computed(() => 
+  commandUserStore.command
+)
 
 async function loadCommands() {
   try {
@@ -35,23 +39,16 @@ const MESSAGES = {
 }
 
 const schema = z.object({
-  firstName: z
-    .string({ message: 'Le prénom est requis' }),
-  lastName: z
-    .string({ message: 'Le nom est requis' }),
-  address: z
-    .string({ message: 'L\'adresse est requise' }),
-  zipCode: z
-    .string({ message: 'Le code postal est requis' })
-    .regex(/^\d{5}$/, { message: 'Le code postal doit être composé de 5 chiffres' }),
+  firstName: z.string({ message: 'Le prénom est requis' }),
+  lastName: z.string({ message: 'Le nom est requis' }),
+  address: z.string({ message: 'L\'adresse est requise' }),
+  zipCode: z.string({ message: 'Le code postal est requis' }).regex(/^\d{5}$/, { message: 'Le code postal doit être composé de 5 chiffres' }),
   addressComplement: z.string().optional(),
-  city: z
-    .string({ message: 'La ville est requise'  }),
+  city: z.string({ message: 'La ville est requise'  }),
   phoneNumber: z
-    .string({ message: 'Le numéro de téléphone est requis' })
-    .regex(/^0\d{9}$/, { message: 'Le numéro de téléphone doit être composé de 10 chiffres et commencer par 0' }),
-  country: z
-    .string( {message: 'Le pays est requis'})
+  .string({ message: 'Le numéro de téléphone est requis' })
+  .regex(/^0\d{9}$/, { message: 'Le numéro de téléphone doit être composé de 10 chiffres et commencer par 0' }),
+  country: z.string( {message: 'Le pays est requis'})
 })
 
 const { handleSubmit, isSubmitting  } = useForm({
@@ -83,6 +80,8 @@ const onSubmit = handleSubmit(async (dataAddress, {resetForm}) => {
   }
 })
 
+// Validation de formulaire
+
 const successMessage = ref<string>('')
 const errorMessage = ref<string>('')
 
@@ -107,6 +106,14 @@ function handleResetForm() {
   reset()
 }
 
+// Redirection, si l'adresse existe on redirige vers la page de paiment
+
+function toGoPayment() {
+  if (commands) {
+    router.push({path: '/payment'})
+  }
+}
+
 const fields = [
   { label: 'Prénom', css:'label-firstname', type: 'text', name: 'firstName', value: firstName, errorMessage: errorFirstName },
   { label: 'Nom', css:'label-lastname', type: 'text', name: 'lastName', value: lastName, errorMessage: errorLastName },
@@ -120,39 +127,112 @@ const fields = [
 </script>
 
 <template>
-  <CommandProgress :currentStep="currentStep" />
-  <div class="d-flex align-items-center justify-content-center address">
-    <div class="container-form">
-      <h2>Entrer vos données</h2>
-      <form @submit.prevent="onSubmit">  
-        <div class="form-column">
-          <div v-for="(field, index) in fields" :key="index">
-            <div class="d-flex flex-column form-group">
-              <label :class="field.css">{{ field.label }}</label>
-              <input v-if="field.type !== 'select'" v-model="field.value.value" :type="field.type" :name="field.name" />
-              <select v-else v-model="field.value.value">
-                <option value="">-- Veuillez sélectionner un pays --</option>
-                <option value="germany">Allemagne</option>
-                <option value="belgium">Belqique</option>
-                <option value="french">France</option>
-              </select>
+  <!-- Form or infos user -->
+  <div v-if="!commands">
+    <!-- Command progress -->
+    <CommandProgress :currentStep="currentStep" />
+    <!-- Form address command -->
+    <div class="d-flex align-items-center justify-content-center address">
+      <div class="container-form">
+        <h2>Entrer vos données</h2>
+        <form @submit.prevent="onSubmit">  
+          <div class="form-column">
+            <div v-for="(field, index) in fields" :key="index">
+              <div class="d-flex flex-column form-group">
+                <label :class="field.css">{{ field.label }}</label>
+                <input v-if="field.type !== 'select'" v-model="field.value.value" :type="field.type" :name="field.name" />
+                <select v-else v-model="field.value.value">
+                  <option value="">-- Veuillez sélectionner un pays --</option>
+                  <option value="germany">Allemagne</option>
+                  <option value="belgium">Belqique</option>
+                  <option value="french">France</option>
+                </select>
+              </div>
+              <!-- Error message field -->
+              <span v-if="field.errorMessage.value" class="error-field">{{ field.errorMessage.value }}</span>
             </div>
-            <span v-if="field.errorMessage.value" class="error-field">{{ field.errorMessage.value }}</span>
           </div>
+          <!-- Alert message -->
+          <div class="text-center alert-message">
+            <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
+            <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
+          </div>
+          <!-- Button valdation form -->
+          <div class="d-flex align-items-center flex-end">
+            <button class="btn btn-black" :disabled="isSubmitting">Enregister la commande</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div v-else>
+    <!-- Command progress -->
+    <CommandProgress :currentStep="currentStep" />
+    <!-- Infos user -->
+    <div class="container">
+      <div class="info-user">
+        <p class="home">Adresse du domicile</p>
+        <div v-for="command in commands" :key="command.id" class="info-user_content">
+          <h3>{{ command.firstName }} {{ command.lastName }}</h3>
+          <p>{{ commands.address }}</p>
+          <p>{{ command.country }}</p>
+          <p>{{ command.city }}</p>
+          <p>{{ command.zipCode }}</p>
         </div>
-        <div class="text-center alert-message">
-          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="/payment" @close="handleResetForm()" />
-          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeFields()" />
+        <div class="d-flex align-items-center space-between container-button">
+          <div class="d-flex align-items-center">
+            <font-awesome-icon icon="fa-solid fa-trash" />
+            <button class="btn btn-info">
+              <font-awesome-icon icon="fa-solid fa-pen" />
+              Modifier
+            </button>
+          </div>
+          <button @click="toGoPayment()" class="btn btn-command">
+            Commander
+          </button>
         </div>
-        <div class="d-flex align-items-center flex-end">
-          <button class="btn btn-black" :disabled="isSubmitting">Enregister la commande</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.container {
+  width: 1300px;
+  margin: auto;
+  .info-user {
+    margin-top: 120px;
+    border: var(--border);
+    padding: 30px;
+    background-color: var(--text-primary-color);
+    .home {
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+  }
+  .fa-trash {
+    font-size: 20px;
+    border: 3px solid black;
+    margin-right: 20px;
+    padding: 15px 15px;
+  }
+}
+
+.info-user_content {
+  h3 {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  p {
+    font-size: 18px;
+    margin-bottom: 9px;
+  }
+}
+
+.container-button {
+  margin-top: 30px;
+}
+
 @mixin labelElems {
   display: flex;
   align-items: center;
@@ -183,9 +263,6 @@ const fields = [
   border-radius: var(--border-radius);
   background-color: var(--text-primary-color);
   width: 1300px;
-  .btn-black {
-    margin-top: 10px;
-  }
   .form-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -197,7 +274,6 @@ const fields = [
         padding: 12px;
         outline: none;
         background-color: white;
-        border-radius: 0;
         &:focus {
           border: 3px solid black;
           padding: 11px;
@@ -232,6 +308,9 @@ const fields = [
         color: var(--text-primary-color);
       }
     }
+  }
+ .btn-black {
+    margin-top: 10px;
   }
 }
 </style>
