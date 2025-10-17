@@ -8,14 +8,13 @@ import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
 import * as z from 'zod'
 import { useRouter } from 'vue-router'
 
-// Récupération des commandes utilisateur connecté
+// Récupération de la commande de l'utilisateur connecté
 
 const commandUserStore = useCommandUserStore()
 const router = useRouter()
 
-const commands = computed(() => 
-  commandUserStore.command
-)
+const commands = computed(() => commandUserStore.command)
+const totalPrice = computed(() => commandUserStore.totalPrice)
 
 async function loadCommands() {
   try {
@@ -32,6 +31,8 @@ onMounted(async () => {
     console.error(e)
   }
 })
+
+// Form Command
 
 const MESSAGES = {
   SUCCESS_ADDRESS: 'Vos données ont bien été enregistrées',
@@ -109,7 +110,7 @@ function handleResetForm() {
 // Redirection, si l'adresse existe on redirige vers la page de paiment
 
 function toGoPayment() {
-  if (commands) {
+  if (commandUserStore.command.length !== 0) {
     router.push({path: '/payment'})
   }
 }
@@ -128,7 +129,7 @@ const fields = [
 
 <template>
   <!-- Form or infos user -->
-  <div v-if="!commands">
+  <div v-if="commands.length === 0">
     <!-- Command progress -->
     <CommandProgress :currentStep="currentStep" />
     <!-- Form address command -->
@@ -174,10 +175,10 @@ const fields = [
         <p class="home">Adresse du domicile</p>
         <div v-for="command in commands" :key="command.id" class="info-user_content">
           <h3>{{ command.firstName }} {{ command.lastName }}</h3>
-          <p>{{ commands.address }}</p>
-          <p>{{ command.country }}</p>
-          <p>{{ command.city }}</p>
+          <p>{{ command.address }}</p>
           <p>{{ command.zipCode }}</p>
+          <p>{{ command.city }}</p>
+          <p>{{ command.country }}</p>
         </div>
         <div class="d-flex align-items-center space-between container-button">
           <div class="d-flex align-items-center">
@@ -187,9 +188,12 @@ const fields = [
               Modifier
             </button>
           </div>
-          <button @click="toGoPayment()" class="btn btn-command">
-            Commander
-          </button>
+          <div class="d-flex align-items-center">
+            <strong class="total-price">{{ totalPrice }} €</strong>
+            <button @click="toGoPayment()" class="btn btn-command">
+              Commander
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -231,6 +235,11 @@ const fields = [
 
 .container-button {
   margin-top: 30px;
+  .total-price {
+    border: 3px solid black;
+    margin-right: 20px;
+    padding: 15px 15px;
+  }
 }
 
 @mixin labelElems {

@@ -1,14 +1,97 @@
 <script setup lang="ts">
 import CommandProgress from '@/templates/commandProgress/CommandProgress.vue'
-import { ref } from 'vue'
+import { useCommandUserStore } from '@/stores/user/commandUserStore'
+import { loadStripe } from '@stripe/stripe-js'
+import { computed, onMounted, ref } from 'vue'
+const stripe = ref(null);
+const cardStripe = ref(null);
+const cardElement = ref(null);
+import axios from 'axios'
 
-const currentStep = ref(3)
+const commandUserStore = useCommandUserStore()
+
+const totalPrice = computed(() => commandUserStore.totalPrice)
+
+const currentStep = ref<number>(3)
+
+onMounted(async () => {
+  stripe.value = await loadStripe('pk_test_51S7vMKGrri7JBEMH0ETlCFzS9xiN409EHLpu07ZRfJURU9LZ79aR2M1NcPjseKOXgZRo1W0MR2qPDb8Z50W3sszt00ksAK8QBQ');
+    const elements = stripe.value.elements();
+    cardStripe.value = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '14px',
+          color: '#32325d',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          padding: '10px',
+        },
+      },
+    });
+    cardStripe.value.mount(cardElement.value);
+});
+
+
+const handleSubmit = async () => {
+  try {
+    const { token, error } = await stripe.value.createToken(cardStripe.value);
+    if (token) {
+      console.log(token)
+    } else {
+      console.error('Erreur lors de la création du token', error);
+    }
+    // if (error) {
+    //   console.error('Erreur lors de la création du token', error);
+    // } else {
+    //   console.log('Token de paiement créé avec succès', token);
+    //   const response = await axios.post('http://localhost:8000/api/payement', new URLSearchParams({
+    //     token: token.id
+    //   }).toString());
+    //   if (response.data.success) {
+    //     alert('Paiement réussi !');
+    //   } else {
+    //     console.error('Erreur lors du paiement', response.data.error);
+    //   }
+    // }
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <template>
-  <div>
-    <CommandProgress :currentStep="currentStep" />
+  <div class="d-flex align-items-center justify-content-center p-20 container">
+    <div class="payment-form">
+      <h1 class="text-center mb-15">Paiement sécurisé</h1>
+      <p class="text-center mb-15">Entrez vos informations de carte de crédit pour effectuer le paiement</p>
+      <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="card-element"></label>
+          <div id="card-element" ref="cardElement"></div>
+        </div>
+        <div class="d-flex flex-column">
+          <button class="btn btn-primary" type="submit">Payer</button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.container {
+  height: 100%;
+}
+
+.payment-form {
+  margin-top: 150px;
+  background-color: var(--text-primary-color);
+  padding: 20px;
+  .form-group {
+    margin-bottom: 6px;
+    #card-element {
+      border: var(--border);
+      border-radius: var(--border-radius);
+      padding: 9px;
+    }
+  }
+}
+</style>

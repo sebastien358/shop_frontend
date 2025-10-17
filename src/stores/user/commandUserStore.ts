@@ -5,6 +5,12 @@ export const useCommandUserStore = defineStore('commandUser', ({
   state: () => ({
     command: []
   }),
+  getters: {
+    totalPrice(state) {
+      const initialValue = 0
+      return state.command[0].commandItems.reduce((acc, product) => acc + product.price * product.quantity, initialValue)
+    }
+  },  
   actions: {
     async getCommandUser() {
       try {

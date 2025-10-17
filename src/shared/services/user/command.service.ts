@@ -8,7 +8,7 @@ export async function axiosGetCommandUser() {
     if (response.status >= 200 || response.status < 300) {
       return response.data
     } else {
-      throw new Error('error recovery commands')
+      throw new Error(`rror recovery commands : ${response.status}`)
     }
   } catch(e) {
     console.log(e)
@@ -22,7 +22,7 @@ export async function axiosAddCommandUser(dataAddress) {
     if (response.status >= 200 || response.status < 300) {
       return response.data
     } else {
-      throw new Error('error add command')
+      throw new Error(`error add command : ${response.status}`)
     }
   } catch(e) {
     console.log(e)
