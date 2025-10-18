@@ -50,7 +50,7 @@ function resetFilters() {
 
 <template>
   <div class="d-flex flex-column space-between shop-filter">
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column flex-fill">
       <!-- Filtration search -->
       <div class="d-flex flex-column shop-filter_search">
         <h4>Rechercher</h4>

@@ -17,7 +17,6 @@ const router = useRouter()
 const commands = computed(() => commandUserStore.command)
 
 const cartStore = useCartStore()
-const totalPrice = computed(() => cartStore.total)
 
 async function loadCommands() {
   try {
@@ -175,13 +174,19 @@ const fields = [
     <!-- Infos user -->
     <div class="container">
       <div class="info-user">
-        <p class="home">Adresse du domicile</p>
-        <div v-for="command in commands" :key="command.id" class="info-user_content">
-          <h3>{{ command.firstName }} {{ command.lastName }}</h3>
-          <p>{{ command.address }}</p>
-          <p>{{ command.zipCode }}</p>
-          <p>{{ command.city }}</p>
-          <p>{{ command.country }}</p>
+        <div v-for="command in commands" :key="command.id">
+          <div class="d-flex space-between infos-command">
+            <div class="d-flex flex-column">
+              <p class="home">Adresse du domicile</p>
+              <h3>{{ command.firstName }} {{ command.lastName }}</h3>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <p>{{ command.address }}</p>
+            <p>{{ command.zipCode }}</p>
+            <p>{{ command.city }}</p>
+            <p>{{ command.country }}</p>
+          </div>
         </div>
         <div class="d-flex align-items-center space-between container-button">
           <div class="d-flex align-items-center">
@@ -192,7 +197,7 @@ const fields = [
             </button>
           </div>
           <div class="d-flex align-items-center">
-            <strong class="total-price">{{ totalPrice }} €</strong>
+            <strong class="total-price">{{ cartStore.total }} €</strong>
             <button @click="toGoPayment()" class="btn btn-command">
               Commander
             </button>
@@ -205,7 +210,7 @@ const fields = [
 
 <style scoped lang="scss">
 .container {
-  width: 1300px;
+  max-width: 1100px;
   margin: auto;
   .info-user {
     margin-top: 120px;
@@ -214,25 +219,27 @@ const fields = [
     background-color: var(--text-primary-color);
     .home {
       font-weight: bold;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
+    h3 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+  p {
+    font-size: 18px;
+    margin-bottom: 9px;
+  }
+  .container-images {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
   }
   .fa-trash {
     font-size: 20px;
     border: 3px solid black;
     margin-right: 20px;
     padding: 15px 15px;
-  }
-}
-
-.info-user_content {
-  h3 {
-    font-size: 20px;
-    margin-bottom: 30px;
-  }
-  p {
-    font-size: 18px;
-    margin-bottom: 9px;
   }
 }
 

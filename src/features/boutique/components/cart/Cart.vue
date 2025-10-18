@@ -105,6 +105,7 @@ function toGoCommand() {
     }
     button {
       margin-top: 6px;
+      padding: 10px;
     }
     .no-product {
       margin-bottom: 10px;

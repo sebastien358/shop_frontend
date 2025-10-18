@@ -133,7 +133,7 @@ function handleResetForm() {
   border: var(--border);
   padding: 20px;
   width: 100%;
-  max-width: 550px;
+  max-width: 520px;
   h2 {
     font-size: 22px;
   }
