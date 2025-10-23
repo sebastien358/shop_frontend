@@ -18,7 +18,6 @@ export async function axiosGetCommandUser() {
   }
 }
 
-
 // Affichage de la liste des commandes d'un utilisateur
 
 export async function axiosGetCommandUserList() {
@@ -28,6 +27,22 @@ export async function axiosGetCommandUserList() {
       return response.data
     } else {
       throw new Error(`Error recovery commands user : ${response.status}`)
+    }
+  } catch(e) {
+    console.log(e)
+    throw e
+  }
+}
+
+// Récupération d'une commande pour modifier les données utilisateur
+
+export async function axiosGetCurrentUserId(id: number) {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/command/user/${id}`)
+    if (response.status >= 200 || response.status < 300) {
+      return response.data
+    } else {
+      throw new Error(`Error recovery command payment : ${response.status}`)
     }
   } catch(e) {
     console.log(e)

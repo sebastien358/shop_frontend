@@ -1,9 +1,5 @@
 <script setup lang="ts"></script>
 
-<template>
-  <div>
-    <p>Profile</p>
-  </div>
-</template>
+<template></template>
 
 <style scoped lang="scss"></style>

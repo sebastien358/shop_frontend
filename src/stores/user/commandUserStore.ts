@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { axiosAddCommandUser, axiosGetCommandUser, axiosGetCommandUserList } from '@/shared/services/user/command.service.ts'
+import { axiosAddCommandUser, axiosGetCommandUser, axiosGetCommandUserList, axiosGetCurrentUserId } from '@/shared/services/user/command.service.ts'
 
 export const useCommandUserStore = defineStore('commandUser', ({
   state: () => ({
     currentCommand: [],
+    currentCommandId: 0,
     command: []
   }),
   actions: {
@@ -13,7 +14,7 @@ export const useCommandUserStore = defineStore('commandUser', ({
         if (response) {
           const command = Array.isArray(response) ? response : [response]
           this.currentCommand = command
-          console.log(this.command)
+          this.currentCommandId = this.currentCommand[0].id
         } else {
           console.log('La response est vide')
         }
@@ -38,11 +39,24 @@ export const useCommandUserStore = defineStore('commandUser', ({
         if (response) {
           const commands = Array.isArray(response) ? response : [response]
           this.command = commands
-          console.log(this.command)
           return response
         } else {
           console.log('La response est vide')
         }
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async getCurrentCommand(id: number) {
+      try {
+        return await axiosGetCurrentUserId(id)
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async editCommandAddressUser(id: number) {
+      try {
+        console.log(id)
       } catch(e) {
         console.error(e)
       }

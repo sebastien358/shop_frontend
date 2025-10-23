@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore.ts'
 import { useRouter } from 'vue-router'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
+import { useCommandUserStore } from '@/stores/user/commandUserStore.ts'
 
 const authStore = useAuthStore()
 
@@ -47,6 +48,26 @@ function logout() {
   authStore.logout()
   router.push({ path: '/login' })
 }
+
+// Récupératio ID commande afin de modifier les données utilisateurs : Adresse
+
+const commandUserStore = useCommandUserStore()
+
+onMounted(async () => {
+  try {
+    await commandUserStore.getCommandUserList()
+  } catch(e) {
+    console.error(e)
+  }
+})
+
+function commandUserAddressId() {
+  if (commandUserStore.currentCommandId) {
+    router.push({path: `/edit/command-address/${commandUserStore.currentCommandId}`})
+  } else {
+    console.log('Il n\'y a pas encore de commande')
+  }
+}
 </script>
 
 <template>
@@ -77,8 +98,9 @@ function logout() {
             <a href="#">Profil</a>
             <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
               <div class="d-flex flex-column dropdown-menu-link">
-                <router-link to="/profile">Mon profil</router-link>
                 <router-link to="/command-user-list">Mes commandes</router-link>
+                <router-link @click="commandUserAddressId()" to="/edit/command-address/id">Données personnelles</router-link>
+                <router-link to="/update-password-user">Modifier mot de passe</router-link>
               </div>
               <div class="dropdown-divider"></div>
             </div>
@@ -125,8 +147,9 @@ function logout() {
           <a href="#">Profil</a>
           <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
             <div class="d-flex flex-column dropdown-menu-link">
-              <router-link to="/profile">Mon profil</router-link>
-              <router-link to="/command">Mes commandes</router-link>
+              <router-link to="/command-user-list">Mes commandes</router-link>
+              <router-link to="/address-user">Données personnelles</router-link>
+              <router-link to="/update-password-user">Modifier mot de passe</router-link>
             </div>
             <div class="dropdown-divider"></div>
           </div>
