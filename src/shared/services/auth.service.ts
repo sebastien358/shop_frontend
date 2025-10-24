@@ -35,10 +35,44 @@ export async function axiosMeInfo() {
   }
 }
 
+// Récupération d'un utilisateur
+
+export async function axiosGetCurrentUserId(id: number) {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/user/${id}`)
+    if (response.status >= 200 && response.status < 300) {
+      return response.data
+    } else {
+      throw new Error('Error recovery user info')
+    }
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
 export async function axiosRegister(dataRegister) {
   try {
     const { email, password } = dataRegister
     const response = await axios.post(`${BASE_URL}/api/register`, {
+      email,
+      password
+    })
+    if (response.status >= 200 && response.status < 300) {
+      return response.data
+    } else {
+      throw new Error('Error registration user')
+    }
+  } catch(e) {
+    console.error(e)
+    throw e
+  }
+}
+
+export async function axiosEditUser(dataRegister, id: number) {
+  try {
+    const { email, password } = dataRegister
+    const response = await axios.post(`${BASE_URL}/api/user/edit/${id}`, {
       email,
       password
     })
@@ -123,7 +157,6 @@ export async function axiosRequestPassword(email) {
 export async function axiosResetPassword(dataResetPassword, token) {
   try {
     const { password } = dataResetPassword
-    console.log(password, token)
     const response = await axios.post(`${BASE_URL}/api/user/reset-password/${token}`, {
       password
     })

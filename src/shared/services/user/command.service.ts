@@ -65,3 +65,19 @@ export async function axiosAddCommandUser(dataAddress) {
     throw e
   }
 }
+
+// Éditer via command les données utilisateur = adresse, ect...
+
+export async function axiosEditCommandUserAddress(dataAddress, id) {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/command/edit/${id}`, dataAddress)
+    if (response.status >= 200 || response.status < 300) {
+      return response.data
+    } else {
+      throw new Error(`error add command : ${response.status}`)
+    }
+  } catch(e) {
+    console.log(e)
+    throw e
+  }
+}

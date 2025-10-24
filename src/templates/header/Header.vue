@@ -15,7 +15,7 @@ const state = reactive<{
   openMenuMobile: boolean
 }>({
   activeDropdown: null,
-  openMenuMobile: false
+  openMenuMobile: false,
 })
 
 function openDropdown(dropType: string | null) {
@@ -53,21 +53,39 @@ function logout() {
 
 const commandUserStore = useCommandUserStore()
 
-onMounted(async () => {
+async function loadCommandUserList() {
   try {
     await commandUserStore.getCommandUserList()
   } catch(e) {
     console.error(e)
   }
+}
+
+onMounted(async () => {
+  try {
+   await loadCommandUserList()
+  } catch (e) {
+    console.error(e)
+  }
 })
 
-function commandUserAddressId() {
-  if (commandUserStore.currentCommandId) {
-    router.push({path: `/edit/command-address/${commandUserStore.currentCommandId}`})
-  } else {
-    console.log('Il n\'y a pas encore de commande')
+// Récupération de l'ID utlisateur, puis redirection et modification des données
+
+async function loadUserInfo() {
+  try {
+    await authStore.infoMe()
+  } catch(e) {
+    console.error(e)
   }
 }
+
+onMounted(async () => {
+  try {
+   await loadUserInfo()
+  } catch (e) {
+    console.error(e)
+  }
+})
 </script>
 
 <template>
@@ -84,9 +102,14 @@ function commandUserAddressId() {
           <li class="mr-10">
             <router-link to="/boutique">Boutique</router-link>
           </li>
-          <li v-if="roleAdmin()" class="mr-10 dropdown" @mouseover="openDropdown('admin')" @mouseout="closeDropdown()">
+          <li
+            v-if="roleAdmin()"
+            class="mr-10 dropdown"
+            @mouseover="openDropdown('admin')"
+            @mouseout="closeDropdown()"
+          >
             <a href="#">Admin</a>
-            <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
+            <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'admin' }">
               <div class="d-flex flex-column dropdown-menu-link">
                 <router-link to="/product-form">Ajouter un produit</router-link>
                 <router-link to="/product-list">Liste des produits</router-link>
@@ -94,13 +117,23 @@ function commandUserAddressId() {
               <div class="dropdown-divider"></div>
             </div>
           </li>
-          <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
+          <li
+            v-if="roleUser()"
+            class="dropdown"
+            @mouseover="openDropdown('user')"
+            @mouseout="closeDropdown()"
+          >
             <a href="#">Profil</a>
-            <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
+            <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'user' }">
               <div class="d-flex flex-column dropdown-menu-link">
                 <router-link to="/command-user-list">Mes commandes</router-link>
-                <router-link @click="commandUserAddressId()" to="/edit/command-address/id">Données personnelles</router-link>
-                <router-link to="/update-password-user">Modifier mot de passe</router-link>
+                <router-link
+                  :to="{ name: 'edit-command', params: { id: commandUserStore.currentCommandId } }"
+                  >Données personnelles</router-link
+                >
+                <router-link :to="{ name: 'edit-user', params: { id: authStore.userId } }"
+                  >Modifier mot de passe</router-link
+                >
               </div>
               <div class="dropdown-divider"></div>
             </div>
@@ -113,10 +146,10 @@ function commandUserAddressId() {
       <ul class="d-flex align-items-center">
         <div v-if="!isLoggedIn()" class="d-flex align-items-center">
           <li class="mr-10">
-            <router-link :to="{path: '/register'}">Inscription</router-link>
+            <router-link :to="{ path: '/register' }">Inscription</router-link>
           </li>
           <li>
-            <router-link :to="{path: '/login'}">Connexion</router-link>
+            <router-link :to="{ path: '/login' }">Connexion</router-link>
           </li>
         </div>
         <div v-else>
@@ -128,14 +161,22 @@ function commandUserAddressId() {
     </div>
     <!-- Menu tablet -->
     <div class="container-tablet">
-      <font-awesome-icon @click="state.openMenuMobile = !state.openMenuMobile" icon="fa-solid fa-bars" />
+      <font-awesome-icon
+        @click="state.openMenuMobile = !state.openMenuMobile"
+        icon="fa-solid fa-bars"
+      />
       <ul v-if="state.openMenuMobile" class="tablet-menu">
         <li>
           <router-link to="/boutique">Boutique</router-link>
         </li>
-        <li v-if="roleAdmin()" class="dropdown" @mouseover="openDropdown('admin')" @mouseout="closeDropdown()">
+        <li
+          v-if="roleAdmin()"
+          class="dropdown"
+          @mouseover="openDropdown('admin')"
+          @mouseout="closeDropdown()"
+        >
           <a href="#">Admin</a>
-          <div class="dropdown-menu" :class="{show: state.activeDropdown === 'admin'}">
+          <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'admin' }">
             <div class="d-flex flex-column dropdown-menu-link">
               <router-link to="/admin">Admin</router-link>
               <router-link to="/product-list">Liste des produits</router-link>
@@ -143,9 +184,14 @@ function commandUserAddressId() {
             <div class="dropdown-divider"></div>
           </div>
         </li>
-        <li v-if="roleUser()" class="dropdown" @mouseover="openDropdown('user')" @mouseout="closeDropdown()">
+        <li
+          v-if="roleUser()"
+          class="dropdown"
+          @mouseover="openDropdown('user')"
+          @mouseout="closeDropdown()"
+        >
           <a href="#">Profil</a>
-          <div class="dropdown-menu" :class="{show: state.activeDropdown === 'user'}">
+          <div class="dropdown-menu" :class="{ show: state.activeDropdown === 'user' }">
             <div class="d-flex flex-column dropdown-menu-link">
               <router-link to="/command-user-list">Mes commandes</router-link>
               <router-link to="/address-user">Données personnelles</router-link>
@@ -156,10 +202,10 @@ function commandUserAddressId() {
         </li>
         <div v-if="!isLoggedIn()">
           <li>
-            <router-link :to="{path: '/register'}">Inscription</router-link>
+            <router-link :to="{ path: '/register' }">Inscription</router-link>
           </li>
           <li>
-            <router-link :to="{path: '/login'}">Connexion</router-link>
+            <router-link :to="{ path: '/login' }">Connexion</router-link>
           </li>
         </div>
         <div v-else>
@@ -214,14 +260,18 @@ function commandUserAddressId() {
   position: relative;
   .dropdown-menu {
     position: absolute;
-    box-shadow: var(--gray-2) 0px 6px 12px -2px, var(--gray-2) 0px 3px 7px -3px;
+    box-shadow:
+      var(--gray-2) 0px 6px 12px -2px,
+      var(--gray-2) 0px 3px 7px -3px;
     padding: 10px 12px;
     background-color: var(--text-primary-color);
     top: 35px;
     left: 0;
     visibility: hidden;
     opacity: 0.5;
-    transition: opacity 200ms ease, visibility 200ms ease;
+    transition:
+      opacity 200ms ease,
+      visibility 200ms ease;
     width: 290px;
     &.show {
       opacity: 1;

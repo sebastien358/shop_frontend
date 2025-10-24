@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import {
+  axiosEditUser,
   axiosEmailExistingLogin,
   axiosEmailExistingRegister,
-  axiosEmailExistingRequestPassword,
+  axiosEmailExistingRequestPassword, axiosGetCurrentUserId,
   axiosLogin, axiosMeInfo,
   axiosRegister,
   axiosRequestPassword,
@@ -16,7 +17,9 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem(TOKEN_KEY),
     isLoggedIn: !!localStorage.getItem(TOKEN_KEY),
-    roles: JSON.parse(localStorage.getItem(USER_ROLES) ?? '[]')
+    roles: JSON.parse(localStorage.getItem(USER_ROLES) ?? '[]'),
+    user: [],
+    userId: 0
   }),
   actions: {
     async login(dataLogin) {
@@ -36,10 +39,38 @@ export const useAuthStore = defineStore('auth', {
         if (response && response.roles) {
           localStorage.setItem(USER_ROLES, JSON.stringify(response.roles))
           this.roles = response.roles
+          this.user = response
+          this.userId = this.user.id
         } else {
           console.log('Réponse invalide')
         }
       } catch (e) {
+        console.error(e)
+      }
+    },
+    async getCurrentUserId(id: number) {
+      try {
+        return await axiosGetCurrentUserId(id)
+      } catch(e) {
+        console.error(e)
+      }
+    },
+    async editUser(dataRegister, id: number) {
+      try {
+        const response = await axiosEditUser(dataRegister, id)
+        const updateUser = response?.data ?? response
+        if (!updateUser) { return }
+        if (updateUser) {
+          const userIndex = this.user.findIndex((user) => user.id === updateUser.id)
+          if (userIndex !== -1) {
+            this.user[userIndex] = updateUser
+          } else {
+            this.user.push(updateUser)
+          }
+        } else {
+          return updateUser
+        }
+      } catch(e) {
         console.error(e)
       }
     },

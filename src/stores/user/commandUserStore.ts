@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { axiosAddCommandUser, axiosGetCommandUser, axiosGetCommandUserList, axiosGetCurrentUserId } from '@/shared/services/user/command.service.ts'
+import { axiosAddCommandUser,
+  axiosEditCommandUserAddress, axiosGetCommandUser, axiosGetCommandUserList, axiosGetCurrentUserId } from '@/shared/services/user/command.service.ts'
 
 export const useCommandUserStore = defineStore('commandUser', ({
   state: () => ({
@@ -54,9 +55,14 @@ export const useCommandUserStore = defineStore('commandUser', ({
         console.error(e)
       }
     },
-    async editCommandAddressUser(id: number) {
+    async editCommandAddressUser(dataAddress, id: number) {
       try {
-        console.log(id)
+        const response = await axiosEditCommandUserAddress(dataAddress, id)
+        if (response) {
+          const stateCommandIndex = this.currentCommand.findIndex((c) => c.id === response.id)
+          this.currentCommand[stateCommandIndex] = response
+          return response
+        }
       } catch(e) {
         console.error(e)
       }

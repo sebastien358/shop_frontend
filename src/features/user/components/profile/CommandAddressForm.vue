@@ -101,14 +101,11 @@ const { value: city, errorMessage: errorCity } = useField('city')
 const { value: phoneNumber, errorMessage: errorPhoneNumber } = useField('phoneNumber')
 const { value: country, errorMessage: errorCountry } = useField('country')
 
-const currentStep = ref<number>(2)
-
 const onSubmit = handleSubmit(async (dataAddress, {resetForm}) => {
   try {
-    const response = await commandUserStore.editCommandAddressUser(dataAddress)
+    const response = await commandUserStore.editCommandAddressUser(dataAddress, route.params.id)
     if (response) {
       setSuccessMessage(MESSAGES.SUCCESS_ADDRESS, resetForm)
-      currentStep.value = 3
     } else {
       setErrorMessage(MESSAGES.INVALID_CREDENTIALS)
     }
@@ -185,21 +182,9 @@ const fields = [
           </div>
         </div>
         <!-- Alert message -->
-        <div class="text-center alert-message">
-          <AlertMessage
-            v-if="successMessage"
-            :message="successMessage"
-            type="success"
-            redirectTo="/payment"
-            @close="handleResetForm()"
-          />
-          <AlertMessage
-            v-if="errorMessage"
-            :message="errorMessage"
-            type="error"
-            redirectTo=""
-            @close="closeAlert()"
-          />
+        <div class="text-center">
+          <AlertMessage v-if="successMessage" :message="successMessage" type="success" redirectTo="" @close="handleResetForm()" class="alert-message" />
+          <AlertMessage v-if="errorMessage" :message="errorMessage" type="error" redirectTo="" @close="closeAlert()" class="alert-message" />
         </div>
         <!-- Button valdation form -->
         <div class="d-flex align-items-center flex-end">
@@ -256,6 +241,9 @@ const fields = [
     }
     .btn-black {
       margin-top: 10px;
+    }
+    .alert-message {
+      margin-top: 15px;
     }
   }
 }

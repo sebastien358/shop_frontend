@@ -4,7 +4,8 @@ import Payment from '@/features/user/components/command/CommandPayment.vue'
 import Finish from '../components/command/CommandFinish.vue'
 import CommandUserList from '@/features/user/components/profile/CommandUserList.vue'
 import UpdatePasswordUser from '@/features/user/components/profile/UpdatePasswordUser.vue'
-import CommandAddressForm from '@/features/user/templates/command-address-form/CommandAddressForm.vue'
+import CommandAddressForm from '@/features/user/components/profile/CommandAddressForm.vue'
+import Register from '@/features/boutique/components/auth/Register.vue'
 
 export const USER_ROUTES: RouteRecordRaw[] = [
   { path: '', redirect: '' },
@@ -12,6 +13,7 @@ export const USER_ROUTES: RouteRecordRaw[] = [
   { path: '/payment', component: Payment },
   { path: '/finish', component: Finish },
   { path: '/command-user-list', component: CommandUserList },
-  { path: '/edit/command-address/:id', component: CommandAddressForm },
-  { path:'/update-password-user', component: UpdatePasswordUser }
+  { path: '/edit/command-address/:id', name:'edit-command', component: CommandAddressForm },
+  { path:'/update-password-user', component: UpdatePasswordUser },
+  { path: '/edit-user/:id', name: 'edit-user', component: Register}
 ]
